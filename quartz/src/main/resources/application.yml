@@ -1,0 +1,9 @@
+spring:
+  quartz:
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: scheduler
+          jobStore:
+            class: org.quartz.simpl.RAMJobStore
