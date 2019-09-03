@@ -1,17 +1,17 @@
-package com.example.quartz.jobs;
+package com.example.quartz.jobs.init;
 
-import com.example.quartz.config.manager.ConfigurationHelper;
-import com.example.quartz.config.manager.LPPEngineJson;
-import com.example.quartz.config.manager.LPPEngineProperties;
-import com.example.quartz.service.GenerateEvents;
-import com.example.quartz.service.SongTextShow;
+import com.example.quartz.configuration.manager.AllPropertiesHelper;
+import com.example.quartz.configuration.manager.ConfigurationHelper;
+import com.example.quartz.configuration.manager.LPPEngineProperties;
+import com.example.quartz.jobs.entity.Sing;
+import com.example.quartz.tasks.GenerateEvents;
+import com.example.quartz.tasks.SongTextShow;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
 @Configuration
 public class JobConfiguration {
@@ -23,9 +23,8 @@ public class JobConfiguration {
     @Autowired
     private LPPEngineProperties lppEngineProperties;
     @Autowired
-    private Environment environment;
-    @Autowired
-    private LPPEngineJson lppEngineJson;
+    private AllPropertiesHelper allProperties;
+
     @Bean
     public Scheduler scheduler() throws SchedulerException {
          Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
@@ -51,7 +50,7 @@ public class JobConfiguration {
         jobDataMap.put("songTextShow",songTextShow);
         jobDataMap.put("configurationHelper",configurationHelper);
         jobDataMap.put("singer",configurationHelper.getSinger());
-//        jobDataMap.put("song",configurationHelper.getSong());
+        jobDataMap.put("song",configurationHelper.getSong());
         jobDataMap.put("song",lppEngineProperties.getSong());
         jobDataMap.put("generateEvents",generateEvents());
 //        jobDataMap.put("song",environment.getProperty("song"));

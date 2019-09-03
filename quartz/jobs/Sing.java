@@ -1,7 +1,7 @@
 package com.example.quartz.jobs;
 
 import com.example.quartz.config.manager.ConfigurationHelper;
-import com.example.quartz.service.SongTextShow;
+import com.example.quartz.tasks.SongTextShow;
 import org.quartz.*;
 
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.example.quartz.service;
+package com.example.quartz.tasks;
 
 import org.springframework.stereotype.Component;
 

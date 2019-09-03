@@ -1,4 +1,4 @@
-package com.example.quartz.config.manager;
+package com.example.quartz.configuration.manager;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;

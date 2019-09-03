@@ -1,4 +1,4 @@
-package com.example.quartz.service;
+package com.example.quartz.tasks;
 
 import java.util.List;
 
@@ -34,6 +34,7 @@ public class GenerateEvents {
         this.los = los;
     }
     public void generateEvents(){
-        System.out.println("{ hotelId: " + hotelId + " apw: " + apw + " los: " + los + " }");
+        System.out.println("{ hotelId: " + hotelId + " apw:" + apw + " los:" + los + " }");
     }
+
 }

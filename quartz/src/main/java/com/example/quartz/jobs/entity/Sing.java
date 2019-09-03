@@ -1,8 +1,8 @@
-package com.example.quartz.jobs;
+package com.example.quartz.jobs.entity;
 
-import com.example.quartz.config.manager.ConfigurationHelper;
-import com.example.quartz.service.GenerateEvents;
-import com.example.quartz.service.SongTextShow;
+import com.example.quartz.configuration.manager.ConfigurationHelper;
+import com.example.quartz.tasks.GenerateEvents;
+import com.example.quartz.tasks.SongTextShow;
 import org.quartz.*;
 
 
@@ -63,7 +63,7 @@ public class Sing implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         System.out.println("***************Sing*****************");
         System.out.println(singer + " sing " + song);
-        songTextShow.print();
+//        songTextShow.print();
         JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
 
         jobDataMap.put("singer",configurationHelper.getSinger());
