@@ -95,11 +95,11 @@ public class JobManageImpl implements IJobManage {
             List<JobExecutionContext> jobExecutionContextList = scheduler.getCurrentlyExecutingJobs();
             List<String> currentJobKeyList = jobExecutionContextList.stream().map(jobExecutionContext -> jobExecutionContext.getJobDetail().getKey().getName()).collect(Collectors.toList());
             List<String> addedJobKeyList;
-            List<String> deletedJobkeyList;
+            List<String> deletedJobKeyList;
             //delete or add a new job/jobs
             addedJobKeyList = newJobKeyList.stream().filter(newJobKey-> !currentJobKeyList.contains(newJobKey)).collect(Collectors.toList());
 
-            deletedJobkeyList = currentJobKeyList.stream().filter(currentJobKey -> !newJobKeyList.contains(currentJobKey)).collect(Collectors.toList());
+            deletedJobKeyList = currentJobKeyList.stream().filter(currentJobKey -> !newJobKeyList.contains(currentJobKey)).collect(Collectors.toList());
 
             List<JobConfigurationMapper> addedJobConfigurationMapperList = jobConfigurationMapperList.stream().filter(e->addedJobKeyList.contains(e.getJobName()+e.getJobGroup())).collect(Collectors.toList());
             //added jobs
@@ -107,8 +107,8 @@ public class JobManageImpl implements IJobManage {
                 addedJobKeyList.forEach(newJob -> add(addedJobConfigurationMapperList));
             }
             //delete jobs
-            if(!CollectionUtils.isEmpty(deletedJobkeyList)){
-                deletedJobkeyList.forEach(this::delete);
+            if(!CollectionUtils.isEmpty(deletedJobKeyList)){
+                deletedJobKeyList.forEach(this::delete);
             }
 
         } catch (SchedulerException e) {
