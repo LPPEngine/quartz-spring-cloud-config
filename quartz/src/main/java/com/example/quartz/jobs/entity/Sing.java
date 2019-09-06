@@ -1,6 +1,7 @@
 package com.example.quartz.jobs.entity;
 
 import com.example.quartz.configuration.manager.ConfigurationHelper;
+import com.example.quartz.configuration.manager.JobConfigurationHelper;
 import com.example.quartz.tasks.GenerateEvents;
 import com.example.quartz.tasks.SongTextShow;
 import org.quartz.*;
@@ -12,6 +13,15 @@ public class Sing implements Job {
 
     private ConfigurationHelper configurationHelper;
     private GenerateEvents generateEvents;
+    private JobConfigurationHelper jobConfigurationHelper;
+
+    public JobConfigurationHelper getJobConfigurationHelper() {
+        return jobConfigurationHelper;
+    }
+
+    public void setJobConfigurationHelper(JobConfigurationHelper jobConfigurationHelper) {
+        this.jobConfigurationHelper = jobConfigurationHelper;
+    }
 
     public GenerateEvents getGenerateEvents() {
         return generateEvents;
@@ -61,7 +71,8 @@ public class Sing implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        System.out.println("***************Sing*****************");
+        System.out.println("*******************" + jobExecutionContext.getJobDetail().getKey() + "************************************");
+        System.out.println("*************** Sing by Jianglixin *****************");
         System.out.println(singer + " sing " + song);
 //        songTextShow.print();
         JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
@@ -77,5 +88,10 @@ public class Sing implements Job {
         System.out.println("********************do business work***********************");
         generateEvents.generateEvents();
         System.out.println("*******************************end*************************");
+        jobConfigurationHelper.getList().forEach(e->System.out.println(e.getJobName()));
+        System.out.println(jobConfigurationHelper.getList().get(0).getJobName());
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 }

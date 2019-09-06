@@ -69,6 +69,11 @@ public class AllPropertiesHelper implements InitializingBean {
 //        return sources;
 //    }
 
+    /**
+     * this method will be replaced , we can configure the job configurations into List<Object> structure on github. So when configurations change , we can retrieve
+     * the new configurations through @ConfigurationProperties class e.g. {@link JobConfigurationHelper}
+     * @return
+     */
     public Map getAllProperties(){
         currentPropertiesMap = restTemplate.getForObject("http://localhost:7003/LPPEngine/jobs/master", Map.class);
         ArrayList arrayList = (currentPropertiesMap != null ? (ArrayList) currentPropertiesMap.get("propertySources") : null);
@@ -83,12 +88,14 @@ public class AllPropertiesHelper implements InitializingBean {
         previousPropertiesMap.clear();
         previousPropertiesMap.putAll(currentPropertiesMap);
         getAllProperties();
+        //job change maybe add a job or delete a job(modify job can atomically, so we might not write code to update it)
         jobManage.jobsChange(currentPropertiesMap,previousPropertiesMap,modifyJobKeyList,addJobKeyList,deleteJobKeyList);
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
 
-        initialJobs.initialAllJobs(getAllProperties());
+//        initialJobs.initialAllJobs(getAllProperties());
+
     }
 }
