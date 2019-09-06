@@ -2,6 +2,7 @@ package com.example.quartz.jobs.init;
 
 import com.example.quartz.configuration.manager.AllPropertiesHelper;
 import com.example.quartz.configuration.manager.ConfigurationHelper;
+import com.example.quartz.configuration.manager.JobConfigurationHelper;
 import com.example.quartz.configuration.manager.LPPEngineProperties;
 import com.example.quartz.jobs.entity.Sing;
 import com.example.quartz.tasks.GenerateEvents;
@@ -24,6 +25,8 @@ public class JobConfiguration {
     private LPPEngineProperties lppEngineProperties;
     @Autowired
     private AllPropertiesHelper allProperties;
+    @Autowired
+    private JobConfigurationHelper jobConfigurationHelper;
 
     @Bean
     public Scheduler scheduler() throws SchedulerException {
@@ -41,33 +44,33 @@ public class JobConfiguration {
         generateEvents.setLos(lppEngineProperties.getLos());
         return generateEvents;
     }
-
-    @Bean
-//    @RefreshScope
-    public JobDetail singJob() throws SchedulerException {
-        JobKey jobKey = new JobKey("singJob","singJobGroup");
-        JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put("songTextShow",songTextShow);
-        jobDataMap.put("configurationHelper",configurationHelper);
-        jobDataMap.put("singer",configurationHelper.getSinger());
-        jobDataMap.put("song",configurationHelper.getSong());
-        jobDataMap.put("song",lppEngineProperties.getSong());
-        jobDataMap.put("generateEvents",generateEvents());
-//        jobDataMap.put("song",environment.getProperty("song"));
-        JobDetail singJob = JobBuilder.newJob(Sing.class)
-                .withIdentity(jobKey)
-                .withDescription("the job for sing a song period")
-                .setJobData(jobDataMap)
-                .storeDurably()
-                .build();
-        TriggerKey triggerKey = new TriggerKey("singTrigger","singTriggerGroup");
-        Trigger trigger = TriggerBuilder.newTrigger()
-                .withIdentity(triggerKey)
-                .startNow()
-                .withDescription("trigger singer sing a song")
-                .withSchedule(CronScheduleBuilder.cronSchedule("0/5 * * * * ?"))
-                .build();
-        scheduler().scheduleJob(singJob,trigger);
-        return singJob;
-    }
+//
+//    @Bean
+////    @RefreshScope
+//    public JobDetail singJob() throws SchedulerException {
+//        JobKey jobKey = new JobKey("singJob","singJobGroup");
+//        JobDataMap jobDataMap = new JobDataMap();
+//        jobDataMap.put("songTextShow",songTextShow);
+//        jobDataMap.put("configurationHelper",configurationHelper);
+//        jobDataMap.put("singer",configurationHelper.getSinger());
+//        jobDataMap.put("song",configurationHelper.getSong());
+//        jobDataMap.put("song",lppEngineProperties.getSong());
+//        jobDataMap.put("generateEvents",generateEvents());
+////        jobDataMap.put("song",environment.getProperty("song"));
+//        JobDetail singJob = JobBuilder.newJob(Sing.class)
+//                .withIdentity(jobKey)
+//                .withDescription("the job for sing a song period")
+//                .setJobData(jobDataMap)
+//                .storeDurably()
+//                .build();
+//        TriggerKey triggerKey = new TriggerKey("singTrigger","singTriggerGroup");
+//        Trigger trigger = TriggerBuilder.newTrigger()
+//                .withIdentity(triggerKey)
+//                .startNow()
+//                .withDescription("trigger singer sing a song")
+//                .withSchedule(CronScheduleBuilder.cronSchedule("0/5 * * * * ?"))
+//                .build();
+//        scheduler().scheduleJob(singJob,trigger);
+//        return singJob;
+//    }
 }

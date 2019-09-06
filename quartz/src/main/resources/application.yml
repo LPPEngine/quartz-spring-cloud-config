@@ -7,3 +7,19 @@ spring:
             instanceName: scheduler
           jobStore:
             class: org.quartz.simpl.RAMJobStore
+#QuartzJob:
+map:
+    jobName: googleJob
+    jobGroup: googleJobGroup
+
+list:
+  - jobName: job1
+    jobGroup: jobGroup
+  - jobName: job2
+    jobGroup: jobGroup
+  - jobName: job3
+    jobGroup: jobGroup
+
+#    job2:
+#      jobName: bingJob
+#      jobGroup: bingJobGroup
