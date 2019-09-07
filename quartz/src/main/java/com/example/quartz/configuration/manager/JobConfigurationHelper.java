@@ -51,7 +51,7 @@ public class JobConfigurationHelper implements InitializingBean {
     }
 
     /**
-     *     Todo: when configuration change , will do something
+     *     Todo: when configuration change , will refresh relative jobs configuration
      */
     @EventListener(EnvironmentChangeEvent.class)
     public void refreshProperties(){

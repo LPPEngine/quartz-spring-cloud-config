@@ -21,8 +21,7 @@ import java.util.Map;
 @ConfigurationProperties
 @Component
 public class AllPropertiesHelper implements InitializingBean {
-    @Autowired
-    InitialJobs initialJobs;
+
     @Autowired
     IJobManage jobManage;
     private List<String> modifyJobKeyList;

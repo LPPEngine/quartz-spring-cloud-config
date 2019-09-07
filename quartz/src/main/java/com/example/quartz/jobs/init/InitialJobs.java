@@ -1,13 +1,13 @@
 package com.example.quartz.jobs.init;
 
 import com.example.quartz.configuration.manager.ConfigurationHelper;
-import com.example.quartz.configuration.manager.JobConfigurationHelper;
 import com.example.quartz.configuration.manager.JobConfigurationMapper;
 import com.example.quartz.configuration.manager.LPPEngineProperties;
-import com.example.quartz.jobs.entity.Sing;
+import com.example.quartz.jobs.entity.PushHotelJob;
 import com.example.quartz.jobs.manage.IJobManage;
-import com.example.quartz.tasks.GenerateEvents;
+import com.example.quartz.tasks.event.GenerateEventsTask;
 import com.example.quartz.tasks.SongTextShow;
+import com.example.quartz.tasks.event.PushEventsTask;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,9 +35,10 @@ public class InitialJobs {
     @Autowired
     LPPEngineProperties lppEngineProperties;
     @Autowired
-    GenerateEvents generateEvents;
+    private PushEventsTask pushEventsTask;
     @Autowired
-    JobConfigurationHelper jobConfigurationHelper;
+    private GenerateEventsTask generateEventsTask;
+
 
     public void initialAllJobs(Map map) throws SchedulerException {
         if(!CollectionUtils.isEmpty(map)){
@@ -51,10 +52,10 @@ public class InitialJobs {
             jobDataMap.put("singer",configurationHelper.getSinger());
 //        jobDataMap.put("song",configurationHelper.getSong());
             jobDataMap.put("song",lppEngineProperties.getSong());
-            jobDataMap.put("generateEvents",generateEvents);
+//            jobDataMap.put("generateEventsTask", generateEventsTask);
 //        jobDataMap.put("song",environment.getProperty("song"));
-            jobDataMap.put("jobConfigurationHelper",jobConfigurationHelper);
-            JobDetail singJob = JobBuilder.newJob(Sing.class)
+//            jobDataMap.put("jobConfigurationHelper",jobConfigurationHelper);
+            JobDetail singJob = JobBuilder.newJob(PushHotelJob.class)
                     .withIdentity(jobKey)
                     .withDescription(map.get("jobDescrition").toString())
                     .setJobData(jobDataMap)
@@ -73,27 +74,24 @@ public class InitialJobs {
     }
 
     public void initialAllJobs(List<JobConfigurationMapper> jobConfigurationList) throws SchedulerException {
+        int i = 0;
         // initial jobs through configurations from config server
-        for (JobConfigurationMapper jobConfigurationMapper: jobConfigurationList
-             ) {
+        for (JobConfigurationMapper jobConfigurationMapper: jobConfigurationList) {
             JobKey jobKey = new JobKey(jobConfigurationMapper.getJobName(),jobConfigurationMapper.getJobGroup());
             if(scheduler.checkExists(jobKey)){
                 continue;
             }
             JobDataMap jobDataMap = new JobDataMap();
-            jobDataMap.put("songTextShow",songTextShow);
-            jobDataMap.put("configurationHelper",configurationHelper);
-            jobDataMap.put("singer",configurationHelper.getSinger());
-            jobDataMap.put("song",lppEngineProperties.getSong());
-            jobDataMap.put("generateEvents",generateEvents);
-            jobDataMap.put("jobConfigurationHelper",jobConfigurationHelper);
-            JobDetail singJob = JobBuilder.newJob(Sing.class)
+            jobDataMap.put("generateEventsTask", generateEventsTask);
+            jobDataMap.put("pushEventsTask", pushEventsTask);
+            jobDataMap.put("jobConfigurationMapper",jobConfigurationMapper);
+            JobDetail singJob = JobBuilder.newJob(PushHotelJob.class)
                     .withIdentity(jobKey)
                     .withDescription("this is a job that sing a song!")
                     .setJobData(jobDataMap)
                     .storeDurably()
                     .build();
-            TriggerKey triggerKey = new TriggerKey("job1Trigger");
+            TriggerKey triggerKey = new TriggerKey("job"+ ++i + "Trigger");
             Trigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity(triggerKey)
                     .startNow()
@@ -102,36 +100,7 @@ public class InitialJobs {
                     .build();
             scheduler.scheduleJob(singJob,trigger);
         }
-//        if(!CollectionUtils.isEmpty(map)){
-//            JobKey jobKey = new JobKey(map.get("jobName").toString());
-//            if(scheduler.checkExists(jobKey)){
-//                return;
-//            }
-//            JobDataMap jobDataMap = new JobDataMap();
-//            jobDataMap.put("songTextShow",songTextShow);
-//            jobDataMap.put("configurationHelper",configurationHelper);
-//            jobDataMap.put("singer",configurationHelper.getSinger());
-////        jobDataMap.put("song",configurationHelper.getSong());
-//            jobDataMap.put("song",lppEngineProperties.getSong());
-//            jobDataMap.put("generateEvents",generateEvents);
-////        jobDataMap.put("song",environment.getProperty("song"));
-//            jobDataMap.put("jobConfigurationHelper",jobConfigurationHelper);
-//            JobDetail singJob = JobBuilder.newJob(Sing.class)
-//                    .withIdentity(jobKey)
-//                    .withDescription(map.get("jobDescrition").toString())
-//                    .setJobData(jobDataMap)
-//                    .storeDurably()
-//                    .build();
-//            TriggerKey triggerKey = new TriggerKey(map.get("triggerName").toString());
-//            Trigger trigger = TriggerBuilder.newTrigger()
-//                    .withIdentity(triggerKey)
-//                    .startNow()
-//                    .withDescription(map.get("triggerDescrition").toString())
-//                    .withSchedule(CronScheduleBuilder.cronSchedule(map.get("period").toString()))
-//                    .build();
-//            scheduler.scheduleJob(singJob,trigger);
-//        }
-//        jobManage.add(allPropertiesHelper.getAllProperties());
+
     }
 
 
