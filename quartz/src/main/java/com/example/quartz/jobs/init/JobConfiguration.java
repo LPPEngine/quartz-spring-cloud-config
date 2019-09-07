@@ -2,10 +2,8 @@ package com.example.quartz.jobs.init;
 
 import com.example.quartz.configuration.manager.AllPropertiesHelper;
 import com.example.quartz.configuration.manager.ConfigurationHelper;
-import com.example.quartz.configuration.manager.JobConfigurationHelper;
 import com.example.quartz.configuration.manager.LPPEngineProperties;
-import com.example.quartz.jobs.entity.Sing;
-import com.example.quartz.tasks.GenerateEvents;
+import com.example.quartz.tasks.event.GenerateEventsTask;
 import com.example.quartz.tasks.SongTextShow;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
@@ -25,8 +23,6 @@ public class JobConfiguration {
     private LPPEngineProperties lppEngineProperties;
     @Autowired
     private AllPropertiesHelper allProperties;
-    @Autowired
-    private JobConfigurationHelper jobConfigurationHelper;
 
     @Bean
     public Scheduler scheduler() throws SchedulerException {
@@ -35,15 +31,15 @@ public class JobConfiguration {
          return scheduler;
     }
 
-    @Bean
-    @RefreshScope
-    public GenerateEvents generateEvents(){
-        GenerateEvents generateEvents = new GenerateEvents();
-        generateEvents.setApw(lppEngineProperties.getApw());
-        generateEvents.setHotelId(lppEngineProperties.getHotelId());
-        generateEvents.setLos(lppEngineProperties.getLos());
-        return generateEvents;
-    }
+//    @Bean
+//    @RefreshScope
+//    public GenerateEventsTask generateEvents(){
+//        GenerateEventsTask generateEventsTask = new GenerateEventsTask();
+//        generateEventsTask.setApw(lppEngineProperties.getApw());
+//        generateEventsTask.setHotelId(lppEngineProperties.getHotelId());
+//        generateEventsTask.setLos(lppEngineProperties.getLos());
+//        return generateEventsTask;
+//    }
 //
 //    @Bean
 ////    @RefreshScope
@@ -55,9 +51,9 @@ public class JobConfiguration {
 //        jobDataMap.put("singer",configurationHelper.getSinger());
 //        jobDataMap.put("song",configurationHelper.getSong());
 //        jobDataMap.put("song",lppEngineProperties.getSong());
-//        jobDataMap.put("generateEvents",generateEvents());
+//        jobDataMap.put("generateEventsTask",generateEventsTask());
 ////        jobDataMap.put("song",environment.getProperty("song"));
-//        JobDetail singJob = JobBuilder.newJob(Sing.class)
+//        JobDetail singJob = JobBuilder.newJob(PushHotelJob.class)
 //                .withIdentity(jobKey)
 //                .withDescription("the job for sing a song period")
 //                .setJobData(jobDataMap)

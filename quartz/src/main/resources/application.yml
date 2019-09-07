@@ -12,13 +12,13 @@ map:
     jobName: googleJob
     jobGroup: googleJobGroup
 
-list:
-  - jobName: job1
-    jobGroup: jobGroup
-  - jobName: job2
-    jobGroup: jobGroup
-  - jobName: job3
-    jobGroup: jobGroup
+#list:
+#  - jobName: job1
+#    jobGroup: jobGroup
+#  - jobName: job2
+#    jobGroup: jobGroup
+#  - jobName: job3
+#    jobGroup: jobGroup
 
 #    job2:
 #      jobName: bingJob
