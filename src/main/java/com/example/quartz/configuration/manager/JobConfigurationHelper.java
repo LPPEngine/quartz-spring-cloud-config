@@ -27,11 +27,7 @@ public class JobConfigurationHelper implements InitializingBean {
 
     @Autowired
     private IJobManage jobManage;
-//    private final Map<String,JobConfigurationMapper> mapperMap = new HashMap<>();
-//
-//    public Map<String, JobConfigurationMapper> getMapperMap() {
-//        return mapperMap;
-//    }
+
 
     private final Map<String,String> map = new HashMap<>();
 
