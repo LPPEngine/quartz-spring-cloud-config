@@ -65,7 +65,7 @@ public class InitialJobs {
             Trigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity(triggerKey)
                     .startNow()
-                    .withDescription(map.get("triggerDescrition").toString())
+                    .withDescription(map.get("triggerDescription").toString())
                     .withSchedule(CronScheduleBuilder.cronSchedule(map.get("period").toString()))
                     .build();
             scheduler.scheduleJob(singJob,trigger);
