@@ -16,6 +16,15 @@ public class JobConfigurationMapper {
     private List<String> apw;
     private List<String> los;
     private List<String> hotelId;
+    private String period;
+
+    public String getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period;
+    }
 
     public List<String> getApw() {
         return apw;

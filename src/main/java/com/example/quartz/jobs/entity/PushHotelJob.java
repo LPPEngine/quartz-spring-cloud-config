@@ -2,6 +2,7 @@ package com.example.quartz.jobs.entity;
 
 import com.example.quartz.configuration.manager.ConfigurationHelper;
 import com.example.quartz.configuration.manager.JobConfigurationMapper;
+import com.example.quartz.jobs.manage.IJobManage;
 import com.example.quartz.tasks.event.GenerateEventsTask;
 import com.example.quartz.tasks.SongTextShow;
 import com.example.quartz.tasks.event.PushEventsTask;
@@ -15,6 +16,21 @@ import org.springframework.stereotype.Component;
 public class PushHotelJob implements Job {
 
     private PushEventsTask pushEventsTask;
+    private ConfigurationHelper configurationHelper;
+    private GenerateEventsTask generateEventsTask;
+    private JobConfigurationMapper jobConfigurationMapper;
+    private SongTextShow songTextShow;
+    private String singer;
+    private String song;
+    private IJobManage jobManage;
+
+    public IJobManage getJobManage() {
+        return jobManage;
+    }
+
+    public void setJobManage(IJobManage jobManage) {
+        this.jobManage = jobManage;
+    }
 
     public PushEventsTask getPushEventsTask() {
         return pushEventsTask;
@@ -24,9 +40,6 @@ public class PushHotelJob implements Job {
         this.pushEventsTask = pushEventsTask;
     }
 
-    private ConfigurationHelper configurationHelper;
-    private GenerateEventsTask generateEventsTask;
-    private JobConfigurationMapper jobConfigurationMapper;
 
     public JobConfigurationMapper getJobConfigurationMapper() {
         return jobConfigurationMapper;
@@ -44,9 +57,6 @@ public class PushHotelJob implements Job {
         this.generateEventsTask = generateEventsTask;
     }
 
-    private SongTextShow songTextShow;
-    private String singer;
-    private String song;
 
     public ConfigurationHelper getConfigurationHelper() {
         return configurationHelper;
@@ -82,25 +92,22 @@ public class PushHotelJob implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        System.out.println("******************* JobKey:" + jobExecutionContext.getJobDetail().getKey() + "*****************************");
+        JobKey jobKey = jobExecutionContext.getJobDetail().getKey();
+
+        System.out.println("******************* JobKey:" + jobKey + "*****************************");
         System.out.println("******************* PushHotelJob ***************************");
-//        System.out.println(singer + " sing " + song);
-//        songTextShow.print();
-//        JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
-
-//        jobDataMap.put("singer",configurationHelper.getSinger());
-//        jobDataMap.put("song",configurationHelper.getSong());
-//        for(Map.Entry entry : jobDataMap.entrySet()){
-//            jobDataMap.put((String) entry.getKey(),configurationHelper.getSong());
-//        }
-//        testAutowired.note();
-
         String event = generateEventsTask.generateEvents(jobConfigurationMapper);
         pushEventsTask.push(event);
         System.out.println("******************************end*******************************");
         System.out.println(jobConfigurationMapper.getJobName());
         System.out.println();
         System.out.println();
-        System.out.println();
+
+        CronTrigger  cronTrigger  = (CronTrigger) jobExecutionContext.getTrigger();
+        String period = cronTrigger.getCronExpression();
+        //judge the trigger period whether has changed
+        if(!period.equals(jobConfigurationMapper.getPeriod())) {
+            jobManage.modify(jobExecutionContext.getTrigger().getKey(), jobConfigurationMapper);
+        }
     }
 }

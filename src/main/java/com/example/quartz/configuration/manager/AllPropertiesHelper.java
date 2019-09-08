@@ -81,15 +81,15 @@ public class AllPropertiesHelper implements InitializingBean {
     /**
      *     Todo: when configuration change , will do something
      */
-    @EventListener(EnvironmentChangeEvent.class)
-    public void refreshProperties(){
-        // must clear,maybe some key of properties on the github would delete
-        previousPropertiesMap.clear();
-        previousPropertiesMap.putAll(currentPropertiesMap);
-        getAllProperties();
-        //job change maybe add a job or delete a job(modify job can atomically, so we might not write code to update it)
-        jobManage.jobsChange(currentPropertiesMap,previousPropertiesMap,modifyJobKeyList,addJobKeyList,deleteJobKeyList);
-    }
+//    @EventListener(EnvironmentChangeEvent.class)
+//    public void refreshProperties(){
+//        // must clear,maybe some key of properties on the github would delete
+//        previousPropertiesMap.clear();
+//        previousPropertiesMap.putAll(currentPropertiesMap);
+//        getAllProperties();
+//        //job change maybe add a job or delete a job(modify job can atomically, so we might not write code to update it)
+//        jobManage.jobsChange(currentPropertiesMap,previousPropertiesMap,modifyJobKeyList,addJobKeyList,deleteJobKeyList);
+//    }
 
     @Override
     public void afterPropertiesSet() throws Exception {

@@ -1,6 +1,8 @@
 package com.example.quartz.jobs.manage;
 
 import com.example.quartz.configuration.manager.JobConfigurationMapper;
+import org.quartz.JobKey;
+import org.quartz.TriggerKey;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +17,7 @@ public interface IJobManage {
 
     void delete(String jobKey);
 
-    void modify(String jobKey);
+    void modify(TriggerKey triggerKey, JobConfigurationMapper jobConfigurationMapper);
 
     void select(String jobKey);
 

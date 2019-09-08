@@ -2,10 +2,7 @@ package com.example.quartz.jobs.manage;
 
 import com.example.quartz.configuration.manager.JobConfigurationMapper;
 import com.example.quartz.jobs.init.InitialJobs;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -53,8 +50,16 @@ public class JobManageImpl implements IJobManage {
     }
 
     @Override
-    public void modify(String jobKey) {
-
+    public void modify(TriggerKey triggerKey,JobConfigurationMapper jobConfigurationMapper) {
+        try {
+           Trigger trigger = TriggerBuilder.newTrigger().withIdentity(triggerKey)
+                   .startNow()
+                   .withSchedule(CronScheduleBuilder.cronSchedule(jobConfigurationMapper.getPeriod()))
+                   .build();
+           scheduler.rescheduleJob(triggerKey,trigger);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

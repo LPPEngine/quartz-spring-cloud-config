@@ -85,6 +85,7 @@ public class InitialJobs {
             jobDataMap.put("generateEventsTask", generateEventsTask);
             jobDataMap.put("pushEventsTask", pushEventsTask);
             jobDataMap.put("jobConfigurationMapper",jobConfigurationMapper);
+            jobDataMap.put("jobManage",jobManage);
             JobDetail singJob = JobBuilder.newJob(PushHotelJob.class)
                     .withIdentity(jobKey)
                     .withDescription("this is a job that sing a song!")
@@ -96,7 +97,7 @@ public class InitialJobs {
                     .withIdentity(triggerKey)
                     .startNow()
                     .withDescription("job test trigger!")
-                    .withSchedule(CronScheduleBuilder.cronSchedule("0/5 * * * * ?"))
+                    .withSchedule(CronScheduleBuilder.cronSchedule(jobConfigurationMapper.getPeriod()))
                     .build();
             scheduler.scheduleJob(singJob,trigger);
         }
