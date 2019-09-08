@@ -31,19 +31,19 @@ public class JobConfigurationHelper implements InitializingBean {
 
     private final Map<String,String> map = new HashMap<>();
 
-    private final List<JobConfigurationMapper> list = new ArrayList<>();
+    private final List<JobConfigurationMapper> jobConfigurationList = new ArrayList<>();
 
     public Map<String, String> getMap() {
         return map;
     }
 
-    public List<JobConfigurationMapper> getList() {
-        return list;
+    public List<JobConfigurationMapper> getJobConfigurationList() {
+        return jobConfigurationList;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        initialJobs.initialAllJobs(list);
+        initialJobs.initialAllJobs(jobConfigurationList);
     }
 
     /**
@@ -51,6 +51,6 @@ public class JobConfigurationHelper implements InitializingBean {
      */
     @EventListener(EnvironmentChangeEvent.class)
     public void refreshProperties(){
-        jobManage.jobsChange(list);
+        jobManage.jobsChange(jobConfigurationList);
     }
 }
