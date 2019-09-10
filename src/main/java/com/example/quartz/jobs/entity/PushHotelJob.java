@@ -14,7 +14,6 @@ public class PushHotelJob implements Job {
 
     private PushEventsTask pushEventsTask;
     private GenerateEventsTask generateEventsTask;
-//    private JobConfigurationMapper jobConfigurationMapper;
     private static JobConfigurationHelper jobConfigurationHelper;
     private String singer;
     private String song;
