@@ -1,6 +1,6 @@
 package com.example.quartz.configuration.manager;
 
-import com.example.quartz.jobs.init.InitialJobs;
+import com.example.quartz.jobs.init.JobsFactory;
 import com.example.quartz.jobs.manage.IJobManage;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,29 +9,33 @@ import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:v-ksong@expedia.com">ksong</a>
  */
 @ConfigurationProperties
 @Component
-public class JobConfigurationHelper implements InitializingBean {
+public class JobConfigurationHelper implements InitializingBean, Serializable {
 
-    @Autowired
-    private InitialJobs initialJobs;
+//    @Autowired
+//    private JobsFactory jobsFactory;
 
     @Autowired
     private IJobManage jobManage;
 
+    private boolean jobConfigurationChanged;
+
 
     private final Map<String,String> map = new HashMap<>();
 
-    private final List<JobConfigurationMapper> jobConfigurationList = new ArrayList<>();
+    private List<JobConfigurationMapper> jobConfigurationList = new ArrayList<>();
+
+
 
     public Map<String, String> getMap() {
         return map;
@@ -43,7 +47,11 @@ public class JobConfigurationHelper implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        initialJobs.initialAllJobs(jobConfigurationList);
+
+        if (jobConfigurationChanged) {
+            jobManage.jobsChange();
+            jobConfigurationChanged = false;
+        }
     }
 
     /**
@@ -51,6 +59,7 @@ public class JobConfigurationHelper implements InitializingBean {
      */
     @EventListener(EnvironmentChangeEvent.class)
     public void refreshProperties(){
-        jobManage.jobsChange(jobConfigurationList);
+        jobConfigurationChanged = true;
+        System.out.println("job configurations have changed");
     }
 }

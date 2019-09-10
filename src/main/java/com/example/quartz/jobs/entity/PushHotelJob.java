@@ -1,6 +1,7 @@
 package com.example.quartz.jobs.entity;
 
 import com.example.quartz.configuration.manager.ConfigurationHelper;
+import com.example.quartz.configuration.manager.JobConfigurationHelper;
 import com.example.quartz.configuration.manager.JobConfigurationMapper;
 import com.example.quartz.jobs.manage.IJobManage;
 import com.example.quartz.tasks.event.GenerateEventsTask;
@@ -18,11 +19,20 @@ public class PushHotelJob implements Job {
     private PushEventsTask pushEventsTask;
     private ConfigurationHelper configurationHelper;
     private GenerateEventsTask generateEventsTask;
-    private JobConfigurationMapper jobConfigurationMapper;
+//    private JobConfigurationMapper jobConfigurationMapper;
+    private static JobConfigurationHelper jobConfigurationHelper;
     private SongTextShow songTextShow;
     private String singer;
     private String song;
     private IJobManage jobManage;
+
+    public JobConfigurationHelper getJobConfigurationHelper() {
+        return jobConfigurationHelper;
+    }
+
+    public void setJobConfigurationHelper(JobConfigurationHelper jobConfigurationHelper) {
+        PushHotelJob.jobConfigurationHelper = jobConfigurationHelper;
+    }
 
     public IJobManage getJobManage() {
         return jobManage;
@@ -41,13 +51,13 @@ public class PushHotelJob implements Job {
     }
 
 
-    public JobConfigurationMapper getJobConfigurationMapper() {
-        return jobConfigurationMapper;
-    }
-
-    public void setJobConfigurationMapper(JobConfigurationMapper jobConfigurationMapper) {
-        this.jobConfigurationMapper = jobConfigurationMapper;
-    }
+//    public JobConfigurationMapper getJobConfigurationMapper() {
+//        return jobConfigurationMapper;
+//    }
+//
+//    public void setJobConfigurationMapper(JobConfigurationMapper jobConfigurationMapper) {
+//        this.jobConfigurationMapper = jobConfigurationMapper;
+//    }
 
     public GenerateEventsTask getGenerateEventsTask() {
         return generateEventsTask;
@@ -93,21 +103,36 @@ public class PushHotelJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobKey jobKey = jobExecutionContext.getJobDetail().getKey();
+        JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
 
-        System.out.println("******************* JobKey:" + jobKey + "*****************************");
-        System.out.println("******************* PushHotelJob ***************************");
-        String event = generateEventsTask.generateEvents(jobConfigurationMapper);
-        pushEventsTask.push(event);
-        System.out.println("******************************end*******************************");
-        System.out.println(jobConfigurationMapper.getJobName());
-        System.out.println();
-        System.out.println();
+//        jobConfigurationHelper.getJobConfigurationList().forEach(jobConfigurationMapper ->{
+//            if(jobKey.toString().equals(jobConfigurationMapper.getJobGroup() + '.' + jobConfigurationMapper.getJobName())){
+//                this.jobConfigurationMapper = jobConfigurationMapper;
+//                jobDataMap.put("jobConfigurationMapper",jobConfigurationMapper);
+//            }
+//        });
+        //get jobConfigurationMapper
+        JobConfigurationMapper jobConfigurationMapper = jobConfigurationHelper.getJobConfigurationList().stream()
+                .filter(jobConfiguration -> jobConfiguration.getJobGroup().equals(jobKey.getGroup()) && jobConfiguration.getJobName().equals(jobKey.getName()))
+                .findFirst()
+                .orElse(null);
 
-        CronTrigger  cronTrigger  = (CronTrigger) jobExecutionContext.getTrigger();
-        String period = cronTrigger.getCronExpression();
-        //judge the trigger period whether has changed
-        if(!period.equals(jobConfigurationMapper.getPeriod())) {
-            jobManage.modify(jobExecutionContext.getTrigger().getKey(), jobConfigurationMapper);
+        if (jobConfigurationMapper != null) {
+            System.out.println("******************* JobKey:" + jobKey + "*****************************");
+            System.out.println("******************* PushHotelJob ***************************");
+            String event = generateEventsTask.generateEvents(jobConfigurationMapper);
+            pushEventsTask.push(event);
+            System.out.println("******************************end*******************************");
+            System.out.println(jobConfigurationMapper.getJobName());
+            System.out.println();
+            System.out.println();
+
+            CronTrigger  cronTrigger  = (CronTrigger) jobExecutionContext.getTrigger();
+            String period = cronTrigger.getCronExpression();
+            //judge the trigger period whether has changed
+            if(!period.equals(jobConfigurationMapper.getPeriod())) {
+                jobManage.modify(jobExecutionContext.getTrigger().getKey(), jobConfigurationMapper);
+            }
         }
     }
 }

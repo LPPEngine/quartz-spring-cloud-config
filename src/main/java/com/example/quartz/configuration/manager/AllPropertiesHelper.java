@@ -1,12 +1,9 @@
 package com.example.quartz.configuration.manager;
 
-import com.example.quartz.jobs.init.InitialJobs;
 import com.example.quartz.jobs.manage.IJobManage;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 

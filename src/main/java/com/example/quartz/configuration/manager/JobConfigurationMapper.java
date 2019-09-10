@@ -1,22 +1,50 @@
 package com.example.quartz.configuration.manager;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author <a href="mailto:v-ksong@expedia.com">ksong</a>
  */
-@ConfigurationProperties
+//@ConfigurationProperties
 @Component
-public class JobConfigurationMapper {
+public class JobConfigurationMapper implements Serializable {
+    @Value("jobName")
     private String jobName;
+    @Value("jobGroup")
     private String jobGroup;
+    @Value("apw")
     private List<String> apw;
+    @Value("los")
     private List<String> los;
+    @Value("hotelId")
     private List<String> hotelId;
+    @Value("period")
     private String period;
+    @Value("triggerName")
+    private String triggerName;
+    @Value("triggerGroup")
+    private String triggerGroup;
+
+    public String getTriggerName() {
+        return triggerName;
+    }
+
+    public void setTriggerName(String triggerName) {
+        this.triggerName = triggerName;
+    }
+
+    public String getTriggerGroup() {
+        return triggerGroup;
+    }
+
+    public void setTriggerGroup(String triggerGroup) {
+        this.triggerGroup = triggerGroup;
+    }
 
     public String getPeriod() {
         return period;

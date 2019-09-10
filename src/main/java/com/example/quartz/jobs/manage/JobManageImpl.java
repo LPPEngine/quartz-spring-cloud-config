@@ -1,25 +1,33 @@
 package com.example.quartz.jobs.manage;
 
+import com.example.quartz.configuration.manager.JobConfigurationHelper;
 import com.example.quartz.configuration.manager.JobConfigurationMapper;
-import com.example.quartz.jobs.init.InitialJobs;
+import com.example.quartz.jobs.init.JobsFactory;
 import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
+import org.quartz.utils.Key;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:v-ksong@expedia.com">ksong</a>
  */
 @Component
+//@PersistJobDataAfterExecution
+//@DisallowConcurrentExecution
 public class JobManageImpl implements IJobManage {
     @Autowired
     private Scheduler scheduler;
     @Autowired
-    private InitialJobs initialJobs;
+    private JobConfigurationHelper jobConfigurationHelper;
+    @Autowired
+    private JobsFactory jobsFactory;
 
     @Override
     public void add(Map map) {
@@ -29,7 +37,7 @@ public class JobManageImpl implements IJobManage {
     @Override
     public void add(List<JobConfigurationMapper> jobConfigurationMapperList) {
         try {
-            initialJobs.initialAllJobs(jobConfigurationMapperList);
+            jobsFactory.addJobs(jobConfigurationMapperList);
         } catch (SchedulerException e) {
             e.printStackTrace();
             jobConfigurationMapperList.forEach(jobConfigurationMapper -> System.out.println("add jobs" + jobConfigurationMapper.getJobName() + jobConfigurationMapper.getJobGroup() + "exception"));
@@ -91,14 +99,25 @@ public class JobManageImpl implements IJobManage {
 
     /**
      * when add a job/jobs or delete a job/jobs
-     * @param jobConfigurationMapperList
      */
     @Override
-    public void jobsChange(List<JobConfigurationMapper> jobConfigurationMapperList) {
+    public void jobsChange() {
+        List<JobConfigurationMapper> jobConfigurationMapperList = jobConfigurationHelper.getJobConfigurationList();
         try {
-            List<String> newJobKeyList = jobConfigurationMapperList.stream().map(e->e.getJobName() + e.getJobGroup()).collect(Collectors.toList());
-            List<JobExecutionContext> jobExecutionContextList = scheduler.getCurrentlyExecutingJobs();
-            List<String> currentJobKeyList = jobExecutionContextList.stream().map(jobExecutionContext -> jobExecutionContext.getJobDetail().getKey().getName()).collect(Collectors.toList());
+//            jobConfigurationMapperList.forEach(jobConfigurationMapper -> {
+//                try {
+//                    JobDetail jobDetail = scheduler.getJobDetail(new JobKey(jobConfigurationMapper.getJobName(),jobConfigurationMapper.getJobGroup()));
+//                    if(jobDetail != null){
+//                        jobDetail.getJobDataMap().put("jobConfigurationMapper",jobConfigurationMapper);
+//                    }
+//                    System.out.println(jobDetail);
+//                } catch (SchedulerException e) {
+//                    e.printStackTrace();
+//                }
+//            });
+            List<String> newJobKeyList = jobConfigurationMapperList.stream().map(e->e.getJobGroup() + '.' + e.getJobName()).collect(Collectors.toList());
+            Set<JobKey> currentJobKeySet = scheduler.getJobKeys(GroupMatcher.groupContains("jobGroup"));
+            List<String> currentJobKeyList = currentJobKeySet.stream().map(Key::toString).collect(Collectors.toList());
             List<String> addedJobKeyList;
             List<String> deletedJobKeyList;
             //delete or add a new job/jobs
@@ -106,7 +125,7 @@ public class JobManageImpl implements IJobManage {
 
             deletedJobKeyList = currentJobKeyList.stream().filter(currentJobKey -> !newJobKeyList.contains(currentJobKey)).collect(Collectors.toList());
 
-            List<JobConfigurationMapper> addedJobConfigurationMapperList = jobConfigurationMapperList.stream().filter(e->addedJobKeyList.contains(e.getJobName()+e.getJobGroup())).collect(Collectors.toList());
+            List<JobConfigurationMapper> addedJobConfigurationMapperList = jobConfigurationMapperList.stream().filter(e->addedJobKeyList.contains(e.getJobGroup() + '.' + e.getJobName())).collect(Collectors.toList());
             //added jobs
             if (!CollectionUtils.isEmpty(addedJobKeyList)) {
                 addedJobKeyList.forEach(newJob -> add(addedJobConfigurationMapperList));

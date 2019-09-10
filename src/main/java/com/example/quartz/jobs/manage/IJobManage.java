@@ -23,5 +23,5 @@ public interface IJobManage {
 
     void jobsChange(Map currentPropertiesMap, Map previousPropertiesMap, List<String> modifyJobKeyList, List<String> addJobKeyList, List<String> deleteJobKeyList);
 
-    void jobsChange(List<JobConfigurationMapper> jobConfigurationMapperList);
+    void jobsChange();
 }
