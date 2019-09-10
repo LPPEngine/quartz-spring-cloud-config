@@ -10,24 +10,15 @@ import java.util.List;
 /**
  * @author <a href="mailto:v-ksong@expedia.com">ksong</a>
  */
-//@ConfigurationProperties
-@Component
+
 public class JobConfigurationMapper implements Serializable {
-    @Value("jobName")
     private String jobName;
-    @Value("jobGroup")
     private String jobGroup;
-    @Value("apw")
     private List<String> apw;
-    @Value("los")
     private List<String> los;
-    @Value("hotelId")
     private List<String> hotelId;
-    @Value("period")
     private String period;
-    @Value("triggerName")
     private String triggerName;
-    @Value("triggerGroup")
     private String triggerGroup;
 
     public String getTriggerName() {
