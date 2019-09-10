@@ -1,9 +1,7 @@
 package com.example.quartz.jobs.init;
 
-import com.example.quartz.tasks.SongTextShow;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

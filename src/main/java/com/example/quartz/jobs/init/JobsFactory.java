@@ -5,7 +5,6 @@ import com.example.quartz.configuration.manager.JobConfigurationMapper;
 import com.example.quartz.jobs.entity.PushHotelJob;
 import com.example.quartz.jobs.manage.IJobManage;
 import com.example.quartz.tasks.event.GenerateEventsTask;
-import com.example.quartz.tasks.SongTextShow;
 import com.example.quartz.tasks.event.PushEventsTask;
 import org.quartz.*;
 import org.springframework.beans.factory.InitializingBean;
@@ -25,9 +24,6 @@ public class JobsFactory implements InitializingBean {
 
     @Autowired
     IJobManage jobManage;
-
-    @Autowired
-    SongTextShow songTextShow;
 
     @Autowired
     private PushEventsTask pushEventsTask;
@@ -66,7 +62,7 @@ public class JobsFactory implements InitializingBean {
         jobDataMap.put("jobManage", jobManage);
         JobDetail singJob = JobBuilder.newJob(PushHotelJob.class)
                 .withIdentity(jobKey)
-                .withDescription("this is a job that sing a song!")
+                .withDescription("this is a job that push hotel price!")
                 .setJobData(jobDataMap)
                 .storeDurably()
                 .build();

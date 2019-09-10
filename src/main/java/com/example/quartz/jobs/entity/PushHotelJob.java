@@ -4,7 +4,6 @@ import com.example.quartz.configuration.manager.JobConfigurationHelper;
 import com.example.quartz.configuration.manager.JobConfigurationMapper;
 import com.example.quartz.jobs.manage.IJobManage;
 import com.example.quartz.tasks.event.GenerateEventsTask;
-import com.example.quartz.tasks.SongTextShow;
 import com.example.quartz.tasks.event.PushEventsTask;
 import org.quartz.*;
 
@@ -17,7 +16,6 @@ public class PushHotelJob implements Job {
     private GenerateEventsTask generateEventsTask;
 //    private JobConfigurationMapper jobConfigurationMapper;
     private static JobConfigurationHelper jobConfigurationHelper;
-    private SongTextShow songTextShow;
     private String singer;
     private String song;
     private IJobManage jobManage;
@@ -61,15 +59,6 @@ public class PushHotelJob implements Job {
 
     public void setGenerateEventsTask(GenerateEventsTask generateEventsTask) {
         this.generateEventsTask = generateEventsTask;
-    }
-
-
-    public SongTextShow getSongTextShow() {
-        return songTextShow;
-    }
-
-    public void setSongTextShow(SongTextShow songTextShow) {
-        this.songTextShow = songTextShow;
     }
 
     public String getSinger() {
