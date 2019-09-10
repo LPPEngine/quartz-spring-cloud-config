@@ -104,13 +104,6 @@ public class PushHotelJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobKey jobKey = jobExecutionContext.getJobDetail().getKey();
         JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
-
-//        jobConfigurationHelper.getJobConfigurationList().forEach(jobConfigurationMapper ->{
-//            if(jobKey.toString().equals(jobConfigurationMapper.getJobGroup() + '.' + jobConfigurationMapper.getJobName())){
-//                this.jobConfigurationMapper = jobConfigurationMapper;
-//                jobDataMap.put("jobConfigurationMapper",jobConfigurationMapper);
-//            }
-//        });
         //get jobConfigurationMapper
         JobConfigurationMapper jobConfigurationMapper = jobConfigurationHelper.getJobConfigurationList().stream()
                 .filter(jobConfiguration -> jobConfiguration.getJobGroup().equals(jobKey.getGroup()) && jobConfiguration.getJobName().equals(jobKey.getName()))

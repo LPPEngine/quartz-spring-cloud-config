@@ -104,17 +104,6 @@ public class JobManageImpl implements IJobManage {
     public void jobsChange() {
         List<JobConfigurationMapper> jobConfigurationMapperList = jobConfigurationHelper.getJobConfigurationList();
         try {
-//            jobConfigurationMapperList.forEach(jobConfigurationMapper -> {
-//                try {
-//                    JobDetail jobDetail = scheduler.getJobDetail(new JobKey(jobConfigurationMapper.getJobName(),jobConfigurationMapper.getJobGroup()));
-//                    if(jobDetail != null){
-//                        jobDetail.getJobDataMap().put("jobConfigurationMapper",jobConfigurationMapper);
-//                    }
-//                    System.out.println(jobDetail);
-//                } catch (SchedulerException e) {
-//                    e.printStackTrace();
-//                }
-//            });
             List<String> newJobKeyList = jobConfigurationMapperList.stream().map(e->e.getJobGroup() + '.' + e.getJobName()).collect(Collectors.toList());
             Set<JobKey> currentJobKeySet = scheduler.getJobKeys(GroupMatcher.groupContains("jobGroup"));
             List<String> currentJobKeyList = currentJobKeySet.stream().map(Key::toString).collect(Collectors.toList());
