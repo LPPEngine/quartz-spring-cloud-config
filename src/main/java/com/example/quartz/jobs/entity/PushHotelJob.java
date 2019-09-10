@@ -1,6 +1,5 @@
 package com.example.quartz.jobs.entity;
 
-import com.example.quartz.configuration.manager.ConfigurationHelper;
 import com.example.quartz.configuration.manager.JobConfigurationHelper;
 import com.example.quartz.configuration.manager.JobConfigurationMapper;
 import com.example.quartz.jobs.manage.IJobManage;
@@ -8,8 +7,6 @@ import com.example.quartz.tasks.event.GenerateEventsTask;
 import com.example.quartz.tasks.SongTextShow;
 import com.example.quartz.tasks.event.PushEventsTask;
 import org.quartz.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 
 @PersistJobDataAfterExecution
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Component;
 public class PushHotelJob implements Job {
 
     private PushEventsTask pushEventsTask;
-    private ConfigurationHelper configurationHelper;
     private GenerateEventsTask generateEventsTask;
 //    private JobConfigurationMapper jobConfigurationMapper;
     private static JobConfigurationHelper jobConfigurationHelper;
@@ -68,14 +64,6 @@ public class PushHotelJob implements Job {
     }
 
 
-    public ConfigurationHelper getConfigurationHelper() {
-        return configurationHelper;
-    }
-
-    public void setConfigurationHelper(ConfigurationHelper configurationHelper) {
-        this.configurationHelper = configurationHelper;
-    }
-
     public SongTextShow getSongTextShow() {
         return songTextShow;
     }
@@ -104,7 +92,8 @@ public class PushHotelJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobKey jobKey = jobExecutionContext.getJobDetail().getKey();
         JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
-        //get jobConfigurationMapper
+
+        //get jobConfigurationMapper firstly
         JobConfigurationMapper jobConfigurationMapper = jobConfigurationHelper.getJobConfigurationList().stream()
                 .filter(jobConfiguration -> jobConfiguration.getJobGroup().equals(jobKey.getGroup()) && jobConfiguration.getJobName().equals(jobKey.getName()))
                 .findFirst()

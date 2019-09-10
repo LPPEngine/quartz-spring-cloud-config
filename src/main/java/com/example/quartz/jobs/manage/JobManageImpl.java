@@ -7,6 +7,8 @@ import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.utils.Key;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 //@PersistJobDataAfterExecution
 //@DisallowConcurrentExecution
 public class JobManageImpl implements IJobManage {
+
     @Autowired
     private Scheduler scheduler;
     @Autowired
@@ -98,23 +101,34 @@ public class JobManageImpl implements IJobManage {
     }
 
     /**
-     * when add a job/jobs or delete a job/jobs
+     *     Todo: add a job/jobs or delete a job/jobs through detect configurations
      */
     @Override
+    @EventListener(EnvironmentChangeEvent.class)
     public void jobsChange() {
         List<JobConfigurationMapper> jobConfigurationMapperList = jobConfigurationHelper.getJobConfigurationList();
         try {
-            List<String> newJobKeyList = jobConfigurationMapperList.stream().map(e->e.getJobGroup() + '.' + e.getJobName()).collect(Collectors.toList());
+            List<String> newJobKeyList = jobConfigurationMapperList.stream()
+                    .map(e->e.getJobGroup() + '.' + e.getJobName())
+                    .collect(Collectors.toList());
             Set<JobKey> currentJobKeySet = scheduler.getJobKeys(GroupMatcher.groupContains("jobGroup"));
-            List<String> currentJobKeyList = currentJobKeySet.stream().map(Key::toString).collect(Collectors.toList());
+            List<String> currentJobKeyList = currentJobKeySet.stream()
+                    .map(Key::toString)
+                    .collect(Collectors.toList());
             List<String> addedJobKeyList;
             List<String> deletedJobKeyList;
             //delete or add a new job/jobs
-            addedJobKeyList = newJobKeyList.stream().filter(newJobKey-> !currentJobKeyList.contains(newJobKey)).collect(Collectors.toList());
+            addedJobKeyList = newJobKeyList.stream()
+                    .filter(newJobKey-> !currentJobKeyList.contains(newJobKey))
+                    .collect(Collectors.toList());
 
-            deletedJobKeyList = currentJobKeyList.stream().filter(currentJobKey -> !newJobKeyList.contains(currentJobKey)).collect(Collectors.toList());
+            deletedJobKeyList = currentJobKeyList.stream()
+                    .filter(currentJobKey -> !newJobKeyList.contains(currentJobKey))
+                    .collect(Collectors.toList());
 
-            List<JobConfigurationMapper> addedJobConfigurationMapperList = jobConfigurationMapperList.stream().filter(e->addedJobKeyList.contains(e.getJobGroup() + '.' + e.getJobName())).collect(Collectors.toList());
+            List<JobConfigurationMapper> addedJobConfigurationMapperList = jobConfigurationMapperList.stream()
+                    .filter(e->addedJobKeyList.contains(e.getJobGroup() + '.' + e.getJobName()))
+                    .collect(Collectors.toList());
             //added jobs
             if (!CollectionUtils.isEmpty(addedJobKeyList)) {
                 addedJobKeyList.forEach(newJob -> add(addedJobConfigurationMapperList));

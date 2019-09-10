@@ -20,21 +20,12 @@ import java.util.Map;
  */
 @ConfigurationProperties
 @Component
-public class JobConfigurationHelper implements InitializingBean, Serializable {
-
-//    @Autowired
-//    private JobsFactory jobsFactory;
-
-    @Autowired
-    private IJobManage jobManage;
-
-    private boolean jobConfigurationChanged;
+public class JobConfigurationHelper implements Serializable {
 
 
     private final Map<String,String> map = new HashMap<>();
 
     private List<JobConfigurationMapper> jobConfigurationList = new ArrayList<>();
-
 
 
     public Map<String, String> getMap() {
@@ -45,21 +36,4 @@ public class JobConfigurationHelper implements InitializingBean, Serializable {
         return jobConfigurationList;
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-
-        if (jobConfigurationChanged) {
-            jobManage.jobsChange();
-            jobConfigurationChanged = false;
-        }
-    }
-
-    /**
-     *     Todo: when configuration change , will refresh relative jobs configuration
-     */
-    @EventListener(EnvironmentChangeEvent.class)
-    public void refreshProperties(){
-        jobConfigurationChanged = true;
-        System.out.println("job configurations have changed");
-    }
 }

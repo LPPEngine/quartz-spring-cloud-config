@@ -1,28 +1,14 @@
 package com.example.quartz.jobs.init;
 
-import com.example.quartz.configuration.manager.AllPropertiesHelper;
-import com.example.quartz.configuration.manager.ConfigurationHelper;
-import com.example.quartz.configuration.manager.LPPEngineProperties;
-import com.example.quartz.tasks.event.GenerateEventsTask;
 import com.example.quartz.tasks.SongTextShow;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class JobConfiguration {
-
-    @Autowired
-    private SongTextShow songTextShow;
-    @Autowired
-    private ConfigurationHelper configurationHelper;
-    @Autowired
-    private LPPEngineProperties lppEngineProperties;
-    @Autowired
-    private AllPropertiesHelper allProperties;
 
     @Bean
     public Scheduler scheduler() throws SchedulerException {
