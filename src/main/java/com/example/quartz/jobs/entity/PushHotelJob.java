@@ -15,8 +15,6 @@ public class PushHotelJob implements Job {
     private PushEventsTask pushEventsTask;
     private GenerateEventsTask generateEventsTask;
     private static JobConfigurationHelper jobConfigurationHelper;
-    private String singer;
-    private String song;
     private IJobManage jobManage;
 
     public JobConfigurationHelper getJobConfigurationHelper() {
@@ -44,14 +42,6 @@ public class PushHotelJob implements Job {
     }
 
 
-//    public JobConfigurationMapper getJobConfigurationMapper() {
-//        return jobConfigurationMapper;
-//    }
-//
-//    public void setJobConfigurationMapper(JobConfigurationMapper jobConfigurationMapper) {
-//        this.jobConfigurationMapper = jobConfigurationMapper;
-//    }
-
     public GenerateEventsTask getGenerateEventsTask() {
         return generateEventsTask;
     }
@@ -60,21 +50,6 @@ public class PushHotelJob implements Job {
         this.generateEventsTask = generateEventsTask;
     }
 
-    public String getSinger() {
-        return singer;
-    }
-
-    public void setSinger(String singer) {
-        this.singer = singer;
-    }
-
-    public String getSong() {
-        return song;
-    }
-
-    public void setSong(String song) {
-        this.song = song;
-    }
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
