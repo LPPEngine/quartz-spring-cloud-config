@@ -6,15 +6,20 @@ import com.example.quartz.jobs.manage.IJobManage;
 import com.example.quartz.tasks.event.GenerateEventsTask;
 import com.example.quartz.tasks.event.PushEventsTask;
 import org.quartz.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 
 
 @PersistJobDataAfterExecution
 @DisallowConcurrentExecution
-public class PushHotelJob implements Job {
-
+public class PushHotelJob extends QuartzJobBean {
+    @Autowired
     private PushEventsTask pushEventsTask;
+    @Autowired
     private GenerateEventsTask generateEventsTask;
-    private static JobConfigurationHelper jobConfigurationHelper;
+    @Autowired
+    private JobConfigurationHelper jobConfigurationHelper;
+    @Autowired
     private IJobManage jobManage;
 
     public JobConfigurationHelper getJobConfigurationHelper() {
@@ -22,7 +27,7 @@ public class PushHotelJob implements Job {
     }
 
     public void setJobConfigurationHelper(JobConfigurationHelper jobConfigurationHelper) {
-        PushHotelJob.jobConfigurationHelper = jobConfigurationHelper;
+        this.jobConfigurationHelper = jobConfigurationHelper;
     }
 
     public IJobManage getJobManage() {
@@ -52,7 +57,7 @@ public class PushHotelJob implements Job {
 
 
     @Override
-    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+    public void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobKey jobKey = jobExecutionContext.getJobDetail().getKey();
         JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
 

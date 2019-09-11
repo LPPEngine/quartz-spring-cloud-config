@@ -4,22 +4,33 @@ spring:
       org:
         quartz:
           scheduler:
-            instanceName: scheduler
+#            instanceName: ClusterScheduler2
+            instanceId: AUTO
           jobStore:
-            class: org.quartz.simpl.RAMJobStore
-#QuartzJob:
-map:
-    jobName: googleJob
-    jobGroup: googleJobGroup
-
-#list:
-#  - jobName: job1
-#    jobGroup: jobGroup
-#  - jobName: job2
-#    jobGroup: jobGroup
-#  - jobName: job3
-#    jobGroup: jobGroup
-
-#    job2:
-#      jobName: bingJob
-#      jobGroup: bingJobGroup
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+            isClustered: true
+            clusterCheckinInterval: 1
+            useProperties: false
+            dataSource: myDS
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 8
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
+          dataSource:
+            myDS:
+              driver: com.mysql.jdbc.Driver
+              URL: jdbc:mysql://localhost:3306/jobs?useUnicode=true&characterEncoding=utf-8&autoReconnect=true
+              user: root
+              password: 670317483Sgy?
+              maxConnections: 10
+    job-store-type: jdbc
+#    jdbc:
+#     initialize-schema: always
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" # * 在yaml 文件属于关键字

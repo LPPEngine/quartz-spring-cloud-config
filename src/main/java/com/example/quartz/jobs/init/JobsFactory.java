@@ -11,24 +11,23 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author <a href="mailto:v-ksong@expedia.com">ksong</a>
  */
 @Component
-public class JobsFactory implements InitializingBean {
+@PersistJobDataAfterExecution
+public class JobsFactory implements InitializingBean, Serializable {
 
-    @Autowired
-    Scheduler scheduler;
+    @Resource
+    Scheduler quartzScheduler;
 
     @Autowired
     IJobManage jobManage;
 
-    @Autowired
-    private PushEventsTask pushEventsTask;
-    @Autowired
-    private GenerateEventsTask generateEventsTask;
     @Autowired
     private JobConfigurationHelper jobConfigurationHelper;
 
@@ -36,7 +35,7 @@ public class JobsFactory implements InitializingBean {
         // initial jobs through configurations from config server
         for (JobConfigurationMapper jobConfigurationMapper: jobConfigurationHelper.getJobConfigurationList()) {
             JobKey jobKey = new JobKey(jobConfigurationMapper.getJobName(),jobConfigurationMapper.getJobGroup());
-            if(scheduler.checkExists(jobKey)){
+            if(quartzScheduler.checkExists(jobKey)){
                 continue;
             }
             newQuartzJobs(jobConfigurationMapper, jobKey);
@@ -56,10 +55,10 @@ public class JobsFactory implements InitializingBean {
 
     private void newQuartzJobs(JobConfigurationMapper jobConfigurationMapper, JobKey jobKey) throws SchedulerException {
         JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put("generateEventsTask", generateEventsTask);
-        jobDataMap.put("pushEventsTask", pushEventsTask);
-        jobDataMap.put("jobConfigurationHelper", jobConfigurationHelper);
-        jobDataMap.put("jobManage", jobManage);
+//        jobDataMap.put("generateEventsTask", generateEventsTask);
+//        jobDataMap.put("pushEventsTask", pushEventsTask);
+//        jobDataMap.put("jobConfigurationHelper", jobConfigurationHelper);
+//        jobDataMap.put("jobManage", jobManage);
         JobDetail singJob = JobBuilder.newJob(PushHotelJob.class)
                 .withIdentity(jobKey)
                 .withDescription("this is a job that push hotel price!")
@@ -73,7 +72,7 @@ public class JobsFactory implements InitializingBean {
                 .withDescription("job test trigger!")
                 .withSchedule(CronScheduleBuilder.cronSchedule(jobConfigurationMapper.getPeriod()))
                 .build();
-        scheduler.scheduleJob(singJob, trigger);
+        quartzScheduler.scheduleJob(singJob, trigger);
     }
 
 

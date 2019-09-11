@@ -12,6 +12,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,10 +25,10 @@ import java.util.stream.Collectors;
 @Component
 //@PersistJobDataAfterExecution
 //@DisallowConcurrentExecution
-public class JobManageImpl implements IJobManage {
+public class JobManageImpl implements IJobManage, Serializable {
 
-    @Autowired
-    private Scheduler scheduler;
+    @Resource
+    private Scheduler quartzScheduler;
     @Autowired
     private JobConfigurationHelper jobConfigurationHelper;
     @Autowired
@@ -51,8 +53,8 @@ public class JobManageImpl implements IJobManage {
     public void delete(String jobKey) {
         try {
             JobKey deletedJobKey = JobKey.jobKey(jobKey);
-            if(scheduler.checkExists(deletedJobKey)){
-                scheduler.deleteJob(deletedJobKey);
+            if(quartzScheduler.checkExists(deletedJobKey)){
+                quartzScheduler.deleteJob(deletedJobKey);
                 System.out.println("delete " + jobKey + " successfully!");
             }
         } catch (SchedulerException e) {
@@ -67,7 +69,7 @@ public class JobManageImpl implements IJobManage {
                    .startNow()
                    .withSchedule(CronScheduleBuilder.cronSchedule(jobConfigurationMapper.getPeriod()))
                    .build();
-           scheduler.rescheduleJob(triggerKey,trigger);
+            quartzScheduler.rescheduleJob(triggerKey,trigger);
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
@@ -111,7 +113,7 @@ public class JobManageImpl implements IJobManage {
             List<String> newJobKeyList = jobConfigurationMapperList.stream()
                     .map(e->e.getJobGroup() + '.' + e.getJobName())
                     .collect(Collectors.toList());
-            Set<JobKey> currentJobKeySet = scheduler.getJobKeys(GroupMatcher.groupContains("jobGroup"));
+            Set<JobKey> currentJobKeySet = quartzScheduler.getJobKeys(GroupMatcher.groupContains("jobGroup"));
             List<String> currentJobKeyList = currentJobKeySet.stream()
                     .map(Key::toString)
                     .collect(Collectors.toList());
