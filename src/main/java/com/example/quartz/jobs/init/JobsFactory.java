@@ -20,7 +20,7 @@ import java.util.List;
 @PersistJobDataAfterExecution
 public class JobsFactory implements InitializingBean, Serializable {
     /**
-     * We must inject springboot auto configurable quartz scheduler,else we can not inject spring beans in quartz job
+     * We must inject springboot auto configurable quartz scheduler,else we can not inject spring beans in quartz job class
      */
     @Resource
     Scheduler quartzScheduler;
