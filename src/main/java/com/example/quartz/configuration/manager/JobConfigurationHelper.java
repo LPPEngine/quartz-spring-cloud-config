@@ -16,15 +16,7 @@ import java.util.Map;
 @Component
 public class JobConfigurationHelper implements Serializable {
 
-
-    private final Map<String,String> map = new HashMap<>();
-
     private List<JobConfigurationMapper> jobConfigurationList = new ArrayList<>();
-
-
-    public Map<String, String> getMap() {
-        return map;
-    }
 
     public List<JobConfigurationMapper> getJobConfigurationList() {
         return jobConfigurationList;

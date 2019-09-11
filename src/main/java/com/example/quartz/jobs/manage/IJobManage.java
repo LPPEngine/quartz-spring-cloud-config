@@ -11,7 +11,6 @@ import java.util.Map;
  * @author <a href="mailto:v-ksong@expedia.com">ksong</a>
  */
 public interface IJobManage {
-    void add(Map map);
 
     void add(List<JobConfigurationMapper> jobConfigurationMapperList);
 
@@ -20,8 +19,6 @@ public interface IJobManage {
     void modify(TriggerKey triggerKey, JobConfigurationMapper jobConfigurationMapper);
 
     void select(String jobKey);
-
-    void jobsChange(Map currentPropertiesMap, Map previousPropertiesMap, List<String> modifyJobKeyList, List<String> addJobKeyList, List<String> deleteJobKeyList);
 
     void jobsChange();
 }

@@ -79,7 +79,7 @@ public class PushHotelJob extends QuartzJobBean {
 
             CronTrigger  cronTrigger  = (CronTrigger) jobExecutionContext.getTrigger();
             String period = cronTrigger.getCronExpression();
-            //judge the trigger period whether has changed
+            //judge the trigger period whether has changed every the job execute
             if(!period.equals(jobConfigurationMapper.getPeriod())) {
                 jobManage.modify(jobExecutionContext.getTrigger().getKey(), jobConfigurationMapper);
             }

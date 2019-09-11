@@ -15,7 +15,6 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,8 +22,6 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:v-ksong@expedia.com">ksong</a>
  */
 @Component
-//@PersistJobDataAfterExecution
-//@DisallowConcurrentExecution
 public class JobManageImpl implements IJobManage, Serializable {
 
     @Resource
@@ -33,11 +30,6 @@ public class JobManageImpl implements IJobManage, Serializable {
     private JobConfigurationHelper jobConfigurationHelper;
     @Autowired
     private JobsFactory jobsFactory;
-
-    @Override
-    public void add(Map map) {
-
-    }
 
     @Override
     public void add(List<JobConfigurationMapper> jobConfigurationMapperList) {
@@ -77,28 +69,6 @@ public class JobManageImpl implements IJobManage, Serializable {
 
     @Override
     public void select(String jobKey) {
-
-    }
-
-    /**
-     * refresh jobs configurations or add a new job(jobs)
-     * @param currentPropertiesMap
-     * @param previousPropertiesMap
-     * @param modifyJobKeyList
-     * @param addJobKeyList
-     * @param deleteJobKeyList
-     */
-    @Override
-    public void jobsChange(Map currentPropertiesMap, Map previousPropertiesMap, List<String> modifyJobKeyList,List<String> addJobKeyList,List<String> deleteJobKeyList){
-        if(!CollectionUtils.isEmpty(modifyJobKeyList)){
-            System.out.println("modify jobs configurations!");
-        }
-        if(!CollectionUtils.isEmpty(addJobKeyList)){
-            System.out.println("add new jobs!");
-        }
-        if(!CollectionUtils.isEmpty(deleteJobKeyList)){
-            System.out.println("delete jobs!");
-        }
 
     }
 

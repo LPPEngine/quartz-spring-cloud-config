@@ -4,8 +4,6 @@ import com.example.quartz.configuration.manager.JobConfigurationHelper;
 import com.example.quartz.configuration.manager.JobConfigurationMapper;
 import com.example.quartz.jobs.entity.PushHotelJob;
 import com.example.quartz.jobs.manage.IJobManage;
-import com.example.quartz.tasks.event.GenerateEventsTask;
-import com.example.quartz.tasks.event.PushEventsTask;
 import org.quartz.*;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,9 @@ import java.util.List;
 @Component
 @PersistJobDataAfterExecution
 public class JobsFactory implements InitializingBean, Serializable {
-
+    /**
+     * We must inject springboot auto configurable quartz scheduler,else we can not inject spring beans in quartz job
+     */
     @Resource
     Scheduler quartzScheduler;
 

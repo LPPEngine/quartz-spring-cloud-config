@@ -8,12 +8,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class JobConfiguration {
 
-    @Bean
-    public Scheduler scheduler() throws SchedulerException {
-         Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
-         scheduler.start();
-         return scheduler;
-    }
+//    @Bean
+//    public Scheduler scheduler() throws SchedulerException {
+//         Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+//         scheduler.start();
+//         return scheduler;
+//    }
 
 //    @Bean
 //    @RefreshScope
