@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: LPPEngine
   quartz:
     properties:
       org:
@@ -33,4 +35,6 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*" # * 在yaml 文件属于关键字
+        include: "*" # * is key in yaml file
+server:
+  port: 7002
