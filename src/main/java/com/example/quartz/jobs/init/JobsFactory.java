@@ -72,6 +72,8 @@ public class JobsFactory implements InitializingBean, Serializable {
                 .withDescription("job test trigger!")
                 .withSchedule(CronScheduleBuilder.cronSchedule(jobConfigurationMapper.getPeriod()))
                 .build();
+        // if cluster, we need to consider thread safe such as multiple node to add jobs or delete jobs,or change job configuration.
+        // What we can do to prevent the safe problem occurring
         quartzScheduler.scheduleJob(singJob, trigger);
     }
 
