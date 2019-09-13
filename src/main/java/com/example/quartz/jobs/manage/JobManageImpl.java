@@ -43,7 +43,10 @@ public class JobManageImpl implements IJobManage, Serializable {
     @Override
     public void delete(String jobKey) {
         try {
-            JobKey deletedJobKey = JobKey.jobKey(jobKey);
+            int index = jobKey.indexOf('.');
+            String name = jobKey.substring(index + 1);
+            String group = jobKey.substring(0,index);
+            JobKey deletedJobKey = JobKey.jobKey(name,group);
             if(quartzScheduler.checkExists(deletedJobKey)){
                 quartzScheduler.deleteJob(deletedJobKey);
                 System.out.println("delete " + jobKey + " successfully!");
