@@ -1,4 +1,4 @@
-package com.example.quartz.configuration.manager;
+package com.example.quartz.configuration.helper;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,6 +16,15 @@ public class JobConfigurationMapper implements Serializable {
     private String period;
     private String triggerName;
     private String triggerGroup;
+    private String jobType;
+
+    public String getJobType() {
+        return jobType;
+    }
+
+    public void setJobType(String jobType) {
+        this.jobType = jobType;
+    }
 
     public String getTriggerName() {
         return triggerName;

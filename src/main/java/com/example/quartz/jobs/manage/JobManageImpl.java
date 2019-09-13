@@ -1,7 +1,7 @@
 package com.example.quartz.jobs.manage;
 
-import com.example.quartz.configuration.manager.JobConfigurationHelper;
-import com.example.quartz.configuration.manager.JobConfigurationMapper;
+import com.example.quartz.configuration.helper.JobConfigurationHelper;
+import com.example.quartz.configuration.helper.JobConfigurationMapper;
 import com.example.quartz.jobs.init.JobsFactory;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
@@ -26,8 +26,7 @@ public class JobManageImpl implements IJobManage, Serializable {
 
     @Resource
     private Scheduler quartzScheduler;
-    @Autowired
-    private JobConfigurationHelper jobConfigurationHelper;
+
     @Autowired
     private JobsFactory jobsFactory;
 
@@ -76,9 +75,7 @@ public class JobManageImpl implements IJobManage, Serializable {
      *     Todo: add a job/jobs or delete a job/jobs through detect configurations
      */
     @Override
-    @EventListener(EnvironmentChangeEvent.class)
-    public void jobsChange() {
-        List<JobConfigurationMapper> jobConfigurationMapperList = jobConfigurationHelper.getJobConfigurationList();
+    public void jobsChange(List<JobConfigurationMapper> jobConfigurationMapperList) {
         try {
             List<String> newJobKeyList = jobConfigurationMapperList.stream()
                     .map(e->e.getJobGroup() + '.' + e.getJobName())

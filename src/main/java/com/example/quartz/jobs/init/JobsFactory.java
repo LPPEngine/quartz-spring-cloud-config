@@ -1,7 +1,8 @@
 package com.example.quartz.jobs.init;
 
-import com.example.quartz.configuration.manager.JobConfigurationHelper;
-import com.example.quartz.configuration.manager.JobConfigurationMapper;
+import com.example.quartz.configuration.helper.JobConfigurationHelper;
+import com.example.quartz.configuration.helper.JobConfigurationMapper;
+import com.example.quartz.enums.JobTypeEnum;
 import com.example.quartz.jobs.entity.PushHotelJob;
 import com.example.quartz.jobs.manage.IJobManage;
 import org.quartz.*;
@@ -18,22 +19,16 @@ import java.util.List;
  */
 @Component
 @PersistJobDataAfterExecution
-public class JobsFactory implements InitializingBean, Serializable {
+public class JobsFactory implements Serializable {
     /**
      * We must inject springboot auto configurable quartz scheduler,else we can not inject spring beans in quartz job class
      */
     @Resource
     Scheduler quartzScheduler;
 
-    @Autowired
-    IJobManage jobManage;
-
-    @Autowired
-    private JobConfigurationHelper jobConfigurationHelper;
-
-    private void initialAllJobs() throws SchedulerException {
+    public void initialAllJobs(List<JobConfigurationMapper> jobConfigurationMapperList) throws SchedulerException {
         // initial jobs through configurations from config server
-        for (JobConfigurationMapper jobConfigurationMapper: jobConfigurationHelper.getJobConfigurationList()) {
+        for (JobConfigurationMapper jobConfigurationMapper: jobConfigurationMapperList) {
             JobKey jobKey = new JobKey(jobConfigurationMapper.getJobName(),jobConfigurationMapper.getJobGroup());
             if(quartzScheduler.checkExists(jobKey)){
                 continue;
@@ -55,11 +50,7 @@ public class JobsFactory implements InitializingBean, Serializable {
 
     private void newQuartzJobs(JobConfigurationMapper jobConfigurationMapper, JobKey jobKey) throws SchedulerException {
         JobDataMap jobDataMap = new JobDataMap();
-//        jobDataMap.put("generateEventsTask", generateEventsTask);
-//        jobDataMap.put("pushEventsTask", pushEventsTask);
-//        jobDataMap.put("jobConfigurationHelper", jobConfigurationHelper);
-//        jobDataMap.put("jobManage", jobManage);
-        JobDetail singJob = JobBuilder.newJob(PushHotelJob.class)
+        JobDetail singJob = JobBuilder.newJob(JobTypeEnum.getJobClass(jobConfigurationMapper.getJobType()))
                 .withIdentity(jobKey)
                 .withDescription("this is a job that push hotel price!")
                 .setJobData(jobDataMap)
@@ -75,11 +66,5 @@ public class JobsFactory implements InitializingBean, Serializable {
         // if cluster, we need to consider thread safe such as multiple node to add jobs or delete jobs,or change job configuration.
         // What we can do to prevent the safe problem occurring
         quartzScheduler.scheduleJob(singJob, trigger);
-    }
-
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        initialAllJobs();
     }
 }
