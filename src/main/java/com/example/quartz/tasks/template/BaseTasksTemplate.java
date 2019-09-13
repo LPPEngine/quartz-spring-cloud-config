@@ -52,17 +52,24 @@ public abstract class BaseTasksTemplate {
     }
 
     public void executeTask(JobExecutionContext jobExecutionContext){
+        //step 1:get job configuration from config service
         JobConfigurationMapper jobConfigurationMapper = getJobConfigurationMapper(jobExecutionContext);
-        getHotelList();
-        System.out.println("******************* JobKey:" + jobConfigurationMapper.getJobGroup() +'.'+ jobConfigurationMapper.getJobName() + "*****************************");
-        System.out.println("*******************"+jobConfigurationMapper.getJobType() +"***************************");
-        String event = generateEvents(jobConfigurationMapper);
-        pushEvents(event);
-        System.out.println("******************************end*******************************");
-        System.out.println(jobConfigurationMapper.getJobName());
-        System.out.println();
-        System.out.println();
-        refreshJobConfiguration(jobExecutionContext,jobConfigurationMapper);
+        if (jobConfigurationMapper != null) {
+            //step 2:get hotel list
+            getHotelList();
+            //step 3:generate events
+            System.out.println("******************* JobKey:" + jobConfigurationMapper.getJobGroup() +'.'+ jobConfigurationMapper.getJobName() + "*****************************");
+            System.out.println("*******************"+jobConfigurationMapper.getJobType() +"***************************");
+            String event = generateEvents(jobConfigurationMapper);
+            //step 4:push events into SQS
+            pushEvents(event);
+            System.out.println("******************************end*******************************");
+            System.out.println(jobConfigurationMapper.getJobName());
+            System.out.println();
+            System.out.println();
+            //step 5:refresh job delay and period if have changed
+            refreshJobConfiguration(jobExecutionContext,jobConfigurationMapper);
+        }
     }
 
 }
