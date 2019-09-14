@@ -60,32 +60,8 @@ public class PushHotelJob extends QuartzJobBean {
 
     @Override
     public void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-//        JobKey jobKey = jobExecutionContext.getJobDetail().getKey();
-//        JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
-//
-//        //get jobConfigurationMapper firstly
-//        JobConfigurationMapper jobConfigurationMapper = jobConfigurationHelper.getJobConfigurationList().stream()
-//                .filter(jobConfiguration -> jobConfiguration.getJobGroup().equals(jobKey.getGroup()) && jobConfiguration.getJobName().equals(jobKey.getName()))
-//                .findFirst()
-//                .orElse(null);
-//
-//        if (jobConfigurationMapper != null) {
-//            System.out.println("******************* JobKey:" + jobKey + "*****************************");
-//            System.out.println("******************* PushHotelJob ***************************");
-//            String event = generateEventsTask.generateEvents(jobConfigurationMapper);
-//            pushEventsTask.push(event);
-//            System.out.println("******************************end*******************************");
-//            System.out.println(jobConfigurationMapper.getJobName());
-//            System.out.println();
-//            System.out.println();
-//
-//            CronTrigger  cronTrigger  = (CronTrigger) jobExecutionContext.getTrigger();
-//            String period = cronTrigger.getCronExpression();
-//            //judge the trigger period whether has changed every the job execute
-//            if(!period.equals(jobConfigurationMapper.getPeriod())) {
-//                jobManage.modify(jobExecutionContext.getTrigger().getKey(), jobConfigurationMapper);
-//            }
-//        }
+
         pushHotelTasks.executeTask(jobExecutionContext);
+
     }
 }
