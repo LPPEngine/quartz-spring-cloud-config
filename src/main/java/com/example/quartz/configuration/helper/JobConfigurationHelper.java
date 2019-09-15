@@ -17,22 +17,38 @@ import java.util.List;
 /**
  * @author <a href="mailto:v-ksong@expedia.com">ksong</a>
  */
-@ConfigurationProperties(prefix = "push-hotel-job-configuration")
+@ConfigurationProperties
 @Component
 @Data
-public class PushHotelJobConfigurationHelper extends BaseHelper implements Serializable, InitializingBean {
+public class JobConfigurationHelper implements Serializable, InitializingBean {
+
+    @Autowired
+    private JobsFactory jobsFactory;
+
+    @Autowired
+    private Observer jobConfigurationObserver;
 
     private static boolean jobConfigurationChange = false;
 
+    /**
+     *     we should init the capacity if we know the configurationList size
+     */
     private List<PushHotelJobConfigurationMapper> pushHotelJobConfigurationList = new ArrayList<>();
+
+    /**
+     *     we should init the capacity if we know the configurationList size
+     */
+    private List<FeedJobConfigurationMapper> feedJobConfigurationList = new ArrayList<>();
 
     @Override
     public void afterPropertiesSet() throws Exception {
         if(!jobConfigurationChange){
             jobsFactory.initialAllJobs(this.getPushHotelJobConfigurationList());
+            jobsFactory.initialAllJobs(this.getFeedJobConfigurationList());
         }else {
             //notify observer
             jobConfigurationObserver.jobConfigurationChange(this.getPushHotelJobConfigurationList());
+            jobConfigurationObserver.jobConfigurationChange(this.getFeedJobConfigurationList());
             jobConfigurationChange = false;
         }
     }
@@ -42,10 +58,5 @@ public class PushHotelJobConfigurationHelper extends BaseHelper implements Seria
     @EventListener(EnvironmentChangeEvent.class)
     private void jobConfigurationListener(){
         jobConfigurationChange = true;
-    }
-
-    @Override
-    public <E extends BaseMapper> List<E> getJobConfigurationList() {
-        return (List<E>) pushHotelJobConfigurationList;
     }
 }
