@@ -1,8 +1,6 @@
 package com.example.quartz.jobs.manage;
 
 import com.example.quartz.configuration.helper.BaseMapper;
-import com.example.quartz.configuration.helper.FeedJobConfigurationMapper;
-import com.example.quartz.configuration.helper.PushHotelJobConfigurationMapper;
 import com.example.quartz.jobs.init.JobsFactory;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
@@ -13,7 +11,6 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

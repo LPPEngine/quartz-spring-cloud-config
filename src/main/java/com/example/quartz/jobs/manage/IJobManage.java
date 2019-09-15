@@ -1,7 +1,6 @@
 package com.example.quartz.jobs.manage;
 
 import com.example.quartz.configuration.helper.BaseMapper;
-import com.example.quartz.configuration.helper.PushHotelJobConfigurationMapper;
 import org.quartz.TriggerKey;
 
 import java.util.List;

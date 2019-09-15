@@ -1,7 +1,6 @@
 package com.example.quartz.jobs.init;
 
 import com.example.quartz.configuration.helper.BaseMapper;
-import com.example.quartz.configuration.helper.PushHotelJobConfigurationMapper;
 import com.example.quartz.enums.JobTypeEnum;
 import org.quartz.*;
 import org.springframework.stereotype.Component;
@@ -46,7 +45,6 @@ public class JobsFactory implements Serializable {
 
     private void newQuartzJobs(BaseMapper jobConfigurationMapper, JobKey jobKey) throws SchedulerException {
         JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put("baseMapper",jobConfigurationMapper);
         JobDetail job = JobBuilder.newJob(JobTypeEnum.getJobClass(jobConfigurationMapper.getJobType()))
                 .withIdentity(jobKey)
                 .withDescription("this is a job that push hotel price or feed job......!")

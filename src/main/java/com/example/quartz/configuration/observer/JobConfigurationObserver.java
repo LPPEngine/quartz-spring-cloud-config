@@ -1,7 +1,6 @@
 package com.example.quartz.configuration.observer;
 
 import com.example.quartz.configuration.helper.BaseMapper;
-import com.example.quartz.configuration.helper.PushHotelJobConfigurationMapper;
 import com.example.quartz.jobs.manage.IJobManage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
