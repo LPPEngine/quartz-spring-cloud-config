@@ -1,6 +1,8 @@
 package com.example.quartz.jobs.manage;
 
-import com.example.quartz.configuration.helper.JobConfigurationMapper;
+import com.example.quartz.configuration.helper.BaseMapper;
+import com.example.quartz.configuration.helper.FeedJobConfigurationMapper;
+import com.example.quartz.configuration.helper.PushHotelJobConfigurationMapper;
 import com.example.quartz.jobs.init.JobsFactory;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
@@ -11,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,7 +31,7 @@ public class JobManageImpl implements IJobManage, Serializable {
     private JobsFactory jobsFactory;
 
     @Override
-    public void add(List<JobConfigurationMapper> jobConfigurationMapperList) {
+    public void add(List<BaseMapper> jobConfigurationMapperList) {
         try {
             jobsFactory.addJobs(jobConfigurationMapperList);
         } catch (SchedulerException e) {
@@ -54,7 +57,7 @@ public class JobManageImpl implements IJobManage, Serializable {
     }
 
     @Override
-    public void modify(TriggerKey triggerKey,JobConfigurationMapper jobConfigurationMapper) {
+    public void modify(TriggerKey triggerKey, BaseMapper jobConfigurationMapper) {
         try {
            Trigger trigger = TriggerBuilder.newTrigger().withIdentity(triggerKey)
                    .startNow()
@@ -75,12 +78,12 @@ public class JobManageImpl implements IJobManage, Serializable {
      *     Todo: add a job/jobs or delete a job/jobs through detect configurations
      */
     @Override
-    public void jobsChange(List<JobConfigurationMapper> jobConfigurationMapperList) {
+    public <E extends BaseMapper> void jobsChange(List<E> jobConfigurationMapperList) {
         try {
             List<String> newJobKeyList = jobConfigurationMapperList.stream()
                     .map(e->e.getJobGroup() + '.' + e.getJobName())
                     .collect(Collectors.toList());
-            Set<JobKey> currentJobKeySet = quartzScheduler.getJobKeys(GroupMatcher.groupContains("jobGroup"));
+            Set<JobKey> currentJobKeySet = quartzScheduler.getJobKeys(GroupMatcher.groupContains(jobConfigurationMapperList.get(0).getJobGroup()));
             List<String> currentJobKeyList = currentJobKeySet.stream()
                     .map(Key::toString)
                     .collect(Collectors.toList());
@@ -95,12 +98,12 @@ public class JobManageImpl implements IJobManage, Serializable {
                     .filter(currentJobKey -> !newJobKeyList.contains(currentJobKey))
                     .collect(Collectors.toList());
 
-            List<JobConfigurationMapper> addedJobConfigurationMapperList = jobConfigurationMapperList.stream()
+            List<BaseMapper> addedPushHotelJobConfigurationMapperList = jobConfigurationMapperList.stream()
                     .filter(e->addedJobKeyList.contains(e.getJobGroup() + '.' + e.getJobName()))
                     .collect(Collectors.toList());
             //added jobs
             if (!CollectionUtils.isEmpty(addedJobKeyList)) {
-                addedJobKeyList.forEach(newJob -> add(addedJobConfigurationMapperList));
+                addedJobKeyList.forEach(newJob -> add(addedPushHotelJobConfigurationMapperList));
             }
             //delete jobs
             if(!CollectionUtils.isEmpty(deletedJobKeyList)){

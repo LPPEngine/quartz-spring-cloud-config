@@ -1,6 +1,6 @@
 package com.example.quartz.jobs.entity;
 
-import com.example.quartz.configuration.helper.JobConfigurationHelper;
+import com.example.quartz.configuration.helper.PushHotelJobConfigurationHelper;
 import com.example.quartz.jobs.manage.IJobManage;
 import com.example.quartz.tasks.event.GeneratePushHotelEventsTask;
 import com.example.quartz.tasks.event.PushEventsTask;
@@ -18,18 +18,18 @@ public class PushHotelJob extends QuartzJobBean {
     @Autowired
     private GeneratePushHotelEventsTask generatePushHotelEventsTask;
     @Autowired
-    private JobConfigurationHelper jobConfigurationHelper;
+    private PushHotelJobConfigurationHelper pushHotelJobConfigurationHelper;
     @Autowired
     private IJobManage jobManage;
     @Autowired
     private BaseTasksTemplate pushHotelTasks;
 
-    public JobConfigurationHelper getJobConfigurationHelper() {
-        return jobConfigurationHelper;
+    public PushHotelJobConfigurationHelper getPushHotelJobConfigurationHelper() {
+        return pushHotelJobConfigurationHelper;
     }
 
-    public void setJobConfigurationHelper(JobConfigurationHelper jobConfigurationHelper) {
-        this.jobConfigurationHelper = jobConfigurationHelper;
+    public void setPushHotelJobConfigurationHelper(PushHotelJobConfigurationHelper pushHotelJobConfigurationHelper) {
+        this.pushHotelJobConfigurationHelper = pushHotelJobConfigurationHelper;
     }
 
     public IJobManage getJobManage() {

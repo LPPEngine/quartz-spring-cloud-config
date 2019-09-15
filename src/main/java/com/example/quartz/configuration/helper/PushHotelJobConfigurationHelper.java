@@ -2,6 +2,7 @@ package com.example.quartz.configuration.helper;
 
 import com.example.quartz.configuration.observer.Observer;
 import com.example.quartz.jobs.init.JobsFactory;
+import lombok.Data;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -16,9 +17,10 @@ import java.util.List;
 /**
  * @author <a href="mailto:v-ksong@expedia.com">ksong</a>
  */
-@ConfigurationProperties
+@ConfigurationProperties(prefix = "push-hotel-job-configuration")
 @Component
-public class JobConfigurationHelper implements Serializable, InitializingBean {
+@Data
+public class PushHotelJobConfigurationHelper implements Serializable, InitializingBean {
 
     @Autowired
     private JobsFactory jobsFactory;
@@ -28,19 +30,15 @@ public class JobConfigurationHelper implements Serializable, InitializingBean {
 
     private static boolean jobConfigurationChange = false;
 
-    private List<JobConfigurationMapper> jobConfigurationList = new ArrayList<>();
-
-    public List<JobConfigurationMapper> getJobConfigurationList() {
-        return jobConfigurationList;
-    }
+    private List<PushHotelJobConfigurationMapper> pushHotelJobConfigurationList = new ArrayList<>();
 
     @Override
     public void afterPropertiesSet() throws Exception {
         if(!jobConfigurationChange){
-            jobsFactory.initialAllJobs(this.getJobConfigurationList());
+            jobsFactory.initialAllJobs(this.getPushHotelJobConfigurationList());
         }else {
             //notify observer
-            jobConfigurationObserver.jobConfigurationChange(this.getJobConfigurationList());
+            jobConfigurationObserver.jobConfigurationChange(this.getPushHotelJobConfigurationList());
             jobConfigurationChange = false;
         }
     }

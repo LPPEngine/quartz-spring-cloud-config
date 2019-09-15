@@ -1,10 +1,11 @@
 package com.example.quartz.configuration.observer;
 
-import com.example.quartz.configuration.helper.JobConfigurationMapper;
+import com.example.quartz.configuration.helper.BaseMapper;
+import com.example.quartz.configuration.helper.PushHotelJobConfigurationMapper;
 
 import java.util.List;
 
 public interface Observer {
 
-    void jobConfigurationChange(List<JobConfigurationMapper> jobConfigurationMapperList);
+    <E extends BaseMapper> void jobConfigurationChange(List<E> jobConfigurationMapperList);
 }

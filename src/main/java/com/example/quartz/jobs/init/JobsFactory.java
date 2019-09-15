@@ -1,13 +1,9 @@
 package com.example.quartz.jobs.init;
 
-import com.example.quartz.configuration.helper.JobConfigurationHelper;
-import com.example.quartz.configuration.helper.JobConfigurationMapper;
+import com.example.quartz.configuration.helper.BaseMapper;
+import com.example.quartz.configuration.helper.PushHotelJobConfigurationMapper;
 import com.example.quartz.enums.JobTypeEnum;
-import com.example.quartz.jobs.entity.PushHotelJob;
-import com.example.quartz.jobs.manage.IJobManage;
 import org.quartz.*;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -26,10 +22,10 @@ public class JobsFactory implements Serializable {
     @Resource
     Scheduler quartzScheduler;
 
-    public void initialAllJobs(List<JobConfigurationMapper> jobConfigurationMapperList) throws SchedulerException {
+    public <E extends BaseMapper> void initialAllJobs(List<E> jobConfigurationMapperList) throws SchedulerException {
         // initial jobs through configurations from config server
-        for (JobConfigurationMapper jobConfigurationMapper: jobConfigurationMapperList) {
-            JobKey jobKey = new JobKey(jobConfigurationMapper.getJobName(),jobConfigurationMapper.getJobGroup());
+        for (BaseMapper jobConfigurationMapper : jobConfigurationMapperList) {
+            JobKey jobKey = new JobKey(jobConfigurationMapper.getJobName(), jobConfigurationMapper.getJobGroup());
             if(quartzScheduler.checkExists(jobKey)){
                 continue;
             }
@@ -38,9 +34,9 @@ public class JobsFactory implements Serializable {
 
     }
 
-    public void addJobs(List<JobConfigurationMapper> jobConfigurationMapperList) throws SchedulerException {
-        for (JobConfigurationMapper jobConfigurationMapper: jobConfigurationMapperList) {
-            JobKey jobKey = new JobKey(jobConfigurationMapper.getJobName(),jobConfigurationMapper.getJobGroup());
+    public void addJobs(List<BaseMapper> jobConfigurationMapperList) throws SchedulerException {
+        for (BaseMapper jobConfigurationMapper : jobConfigurationMapperList) {
+            JobKey jobKey = new JobKey(jobConfigurationMapper.getJobName(), jobConfigurationMapper.getJobGroup());
 //            if(scheduler.checkExists(jobKey)){
 //                continue;
 //            }
@@ -48,7 +44,7 @@ public class JobsFactory implements Serializable {
         }
     }
 
-    private void newQuartzJobs(JobConfigurationMapper jobConfigurationMapper, JobKey jobKey) throws SchedulerException {
+    private void newQuartzJobs(BaseMapper jobConfigurationMapper, JobKey jobKey) throws SchedulerException {
         JobDataMap jobDataMap = new JobDataMap();
         JobDetail singJob = JobBuilder.newJob(JobTypeEnum.getJobClass(jobConfigurationMapper.getJobType()))
                 .withIdentity(jobKey)

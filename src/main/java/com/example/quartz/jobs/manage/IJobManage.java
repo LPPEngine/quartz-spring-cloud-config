@@ -1,6 +1,7 @@
 package com.example.quartz.jobs.manage;
 
-import com.example.quartz.configuration.helper.JobConfigurationMapper;
+import com.example.quartz.configuration.helper.BaseMapper;
+import com.example.quartz.configuration.helper.PushHotelJobConfigurationMapper;
 import org.quartz.TriggerKey;
 
 import java.util.List;
@@ -10,13 +11,13 @@ import java.util.List;
  */
 public interface IJobManage {
 
-    void add(List<JobConfigurationMapper> jobConfigurationMapperList);
+    void add(List<BaseMapper> jobConfigurationMapperList);
 
     void delete(String jobKey);
 
-    void modify(TriggerKey triggerKey, JobConfigurationMapper jobConfigurationMapper);
+    void modify(TriggerKey triggerKey, BaseMapper pushHotelJobConfigurationMapper);
 
     void select(String jobKey);
 
-    void jobsChange(List<JobConfigurationMapper> jobConfigurationMapperList);
+    <E extends BaseMapper> void jobsChange(List<E> jobConfigurationMapperList);
 }
