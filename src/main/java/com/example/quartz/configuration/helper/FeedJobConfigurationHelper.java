@@ -10,18 +10,15 @@ import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @ConfigurationProperties(prefix = "feed-job-configuration-list")
 @Component
 @Data
-public class FeedJobConfigurationHelper implements InitializingBean {
+public class FeedJobConfigurationHelper extends BaseHelper implements InitializingBean, Serializable {
 
-    @Autowired
-    private JobsFactory jobsFactory;
-    @Autowired
-    private Observer jobConfigurationObserver;
     /**
      *     we should init the capacity if we know the configurationList size
      */
@@ -46,5 +43,10 @@ public class FeedJobConfigurationHelper implements InitializingBean {
     @EventListener(EnvironmentChangeEvent.class)
     private void jobConfigurationListener(){
         jobConfigurationChange = true;
+    }
+
+    @Override
+    public <E extends BaseMapper> List<E> getJobConfigurationList() {
+        return (List<E>) feedJobConfigurationList;
     }
 }

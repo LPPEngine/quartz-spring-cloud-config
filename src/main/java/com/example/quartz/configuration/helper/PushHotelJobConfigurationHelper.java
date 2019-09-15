@@ -20,13 +20,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = "push-hotel-job-configuration")
 @Component
 @Data
-public class PushHotelJobConfigurationHelper implements Serializable, InitializingBean {
-
-    @Autowired
-    private JobsFactory jobsFactory;
-
-    @Autowired
-    private Observer jobConfigurationObserver;
+public class PushHotelJobConfigurationHelper extends BaseHelper implements Serializable, InitializingBean {
 
     private static boolean jobConfigurationChange = false;
 
@@ -48,5 +42,10 @@ public class PushHotelJobConfigurationHelper implements Serializable, Initializi
     @EventListener(EnvironmentChangeEvent.class)
     private void jobConfigurationListener(){
         jobConfigurationChange = true;
+    }
+
+    @Override
+    public <E extends BaseMapper> List<E> getJobConfigurationList() {
+        return (List<E>) pushHotelJobConfigurationList;
     }
 }

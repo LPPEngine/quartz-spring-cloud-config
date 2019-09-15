@@ -1,5 +1,6 @@
 package com.example.quartz.jobs.entity;
 
+import com.example.quartz.configuration.helper.BaseMapper;
 import com.example.quartz.configuration.helper.PushHotelJobConfigurationHelper;
 import com.example.quartz.jobs.manage.IJobManage;
 import com.example.quartz.tasks.event.GeneratePushHotelEventsTask;
@@ -23,40 +24,16 @@ public class PushHotelJob extends QuartzJobBean {
     private IJobManage jobManage;
     @Autowired
     private BaseTasksTemplate pushHotelTasks;
+    @Autowired
+    private BaseMapper baseMapper;
 
-    public PushHotelJobConfigurationHelper getPushHotelJobConfigurationHelper() {
-        return pushHotelJobConfigurationHelper;
+    public BaseMapper getBaseMapper() {
+        return baseMapper;
     }
 
-    public void setPushHotelJobConfigurationHelper(PushHotelJobConfigurationHelper pushHotelJobConfigurationHelper) {
-        this.pushHotelJobConfigurationHelper = pushHotelJobConfigurationHelper;
+    public void setBaseMapper(BaseMapper baseMapper) {
+        this.baseMapper = baseMapper;
     }
-
-    public IJobManage getJobManage() {
-        return jobManage;
-    }
-
-    public void setJobManage(IJobManage jobManage) {
-        this.jobManage = jobManage;
-    }
-
-    public PushEventsTask getPushEventsTask() {
-        return pushEventsTask;
-    }
-
-    public void setPushEventsTask(PushEventsTask pushEventsTask) {
-        this.pushEventsTask = pushEventsTask;
-    }
-
-
-    public GeneratePushHotelEventsTask getGeneratePushHotelEventsTask() {
-        return generatePushHotelEventsTask;
-    }
-
-    public void setGeneratePushHotelEventsTask(GeneratePushHotelEventsTask generatePushHotelEventsTask) {
-        this.generatePushHotelEventsTask = generatePushHotelEventsTask;
-    }
-
 
     @Override
     public void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
