@@ -46,9 +46,9 @@ public class JobsFactory implements Serializable {
 
     private void newQuartzJobs(BaseMapper jobConfigurationMapper, JobKey jobKey) throws SchedulerException {
         JobDataMap jobDataMap = new JobDataMap();
-        JobDetail singJob = JobBuilder.newJob(JobTypeEnum.getJobClass(jobConfigurationMapper.getJobType()))
+        JobDetail job = JobBuilder.newJob(JobTypeEnum.getJobClass(jobConfigurationMapper.getJobType()))
                 .withIdentity(jobKey)
-                .withDescription("this is a job that push hotel price!")
+                .withDescription("this is a job that push hotel price or feed job......!")
                 .setJobData(jobDataMap)
                 .storeDurably()
                 .build();
@@ -61,6 +61,6 @@ public class JobsFactory implements Serializable {
                 .build();
         // if cluster, we need to consider thread safe such as multiple node to add jobs or delete jobs,or change job configuration.
         // What we can do to prevent the safe problem occurring
-        quartzScheduler.scheduleJob(singJob, trigger);
+        quartzScheduler.scheduleJob(job, trigger);
     }
 }
