@@ -56,7 +56,7 @@ public class JobConfigurationHelper implements Serializable, InitializingBean {
      *     Todo: add a job/jobs or delete a job/jobs through detect configurations
      */
     @EventListener(EnvironmentChangeEvent.class)
-    private void jobConfigurationListener(){
+    public void jobConfigurationListener(){
         jobConfigurationChange = true;
     }
 }
