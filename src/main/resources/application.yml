@@ -1,44 +1,45 @@
 spring:
   application:
     name: LPPEngine
-#  quartz:
-#    properties:
-#      org:
-#        quartz:
-#          scheduler:
-##            instanceName: ClusterScheduler2
-#            instanceId: AUTO
-#          jobStore:
-#            class: org.quartz.impl.jdbcjobstore.JobStoreTX
-#            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
-#            tablePrefix: QRTZ_
-#            isClustered: true
-#            clusterCheckinInterval: 1
-#            useProperties: false
-#            dataSource: myDS
-#          threadPool:
-#            class: org.quartz.simpl.SimpleThreadPool
-#            threadCount: 8
-#            threadPriority: 5
-#            threadsInheritContextClassLoaderOfInitializingThread: true
-#          dataSource:
-#            myDS:
-#              driver: com.mysql.jdbc.Driver
-#              URL: jdbc:mysql://localhost:3306/jobs?useUnicode=true&characterEncoding=utf-8&autoReconnect=true
-#              user: root
-#              password: 670317483Sgy?
-#              maxConnections: 10
-#    job-store-type: jdbc
-#    jdbc:
-#     initialize-schema: always
   quartz:
     properties:
       org:
         quartz:
           scheduler:
-            instanceName: scheduler
+#            instanceName: ClusterScheduler2
+            instanceId: AUTO
           jobStore:
-            class: org.quartz.simpl.RAMJobStore
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+            isClustered: true
+            clusterCheckinInterval: 1
+            useProperties: false
+            dataSource: myDS
+            acquireTriggersWithinLock: true
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 8
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
+          dataSource:
+            myDS:
+              driver: com.mysql.jdbc.Driver
+              URL: jdbc:mysql://localhost:3306/jobs?useUnicode=true&characterEncoding=utf-8&autoReconnect=true
+              user: root
+              password: 670317483Sgy?
+              maxConnections: 10
+    job-store-type: jdbc
+#    jdbc:
+#     initialize-schema: always
+#  quartz:
+#    properties:
+#      org:
+#        quartz:
+#          scheduler:
+#            instanceName: scheduler
+#          jobStore:
+#            class: org.quartz.simpl.RAMJobStore
 management:
   endpoints:
     web:
