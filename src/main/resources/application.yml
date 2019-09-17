@@ -14,7 +14,7 @@ spring:
             tablePrefix: QRTZ_
             isClustered: true
             clusterCheckinInterval: 1
-            useProperties: false
+            useProperties: true
             dataSource: myDS
             acquireTriggersWithinLock: true
           threadPool:
