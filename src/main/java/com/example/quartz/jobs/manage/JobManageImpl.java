@@ -44,10 +44,12 @@ public class JobManageImpl implements IJobManage, Serializable {
             String name = jobKey.substring(index + 1);
             String group = jobKey.substring(0,index);
             JobKey deletedJobKey = JobKey.jobKey(name,group);
+            //lock??
             if(quartzScheduler.checkExists(deletedJobKey)){
                 quartzScheduler.deleteJob(deletedJobKey);
                 System.out.println("delete " + jobKey + " successfully!");
             }
+            //unlock??
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
