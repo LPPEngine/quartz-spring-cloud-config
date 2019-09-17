@@ -35,7 +35,9 @@ public abstract class BaseTasksTemplate {
         String period = cronTrigger.getCronExpression();
         //judge the trigger period whether has changed every the job execute
         if(!period.equals(jobConfigurationMapper.getPeriod())) {
+            //lock (maybe a job just can run in a instance at a trigger so we maybe not lock this code)
             jobManage.modify(jobExecutionContext.getTrigger().getKey(), jobConfigurationMapper);
+            //unlock
         }
     }
 
