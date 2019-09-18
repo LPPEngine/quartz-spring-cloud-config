@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface Observer {
 
-    <E extends BaseMapper> void jobConfigurationChange(List<E> jobConfigurationMapperList);
+    <E extends BaseMapper> void jobConfigurationChange(List<E> jobConfigurationMapperList,String jobGroup);
 }

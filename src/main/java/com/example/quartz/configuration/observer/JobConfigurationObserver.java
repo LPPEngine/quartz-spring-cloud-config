@@ -13,7 +13,7 @@ public class JobConfigurationObserver implements Observer {
     @Autowired
     private IJobManage jobManage;
     @Override
-    public <E extends BaseMapper> void jobConfigurationChange(List<E> jobConfigurationMapperList) {
-        jobManage.jobsChange(jobConfigurationMapperList);
+    public <E extends BaseMapper> void jobConfigurationChange(List<E> jobConfigurationMapperList,String jobGroup) {
+        jobManage.jobsChange(jobConfigurationMapperList,jobGroup);
     }
 }

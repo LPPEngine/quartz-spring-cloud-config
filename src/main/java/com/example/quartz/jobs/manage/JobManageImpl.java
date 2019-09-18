@@ -38,16 +38,13 @@ public class JobManageImpl implements IJobManage, Serializable {
     }
 
     @Override
-    public void delete(String jobKey) {
+    public void delete(List<JobKey> jobKeyList) {
         try {
-            int index = jobKey.indexOf('.');
-            String name = jobKey.substring(index + 1);
-            String group = jobKey.substring(0,index);
-            JobKey deletedJobKey = JobKey.jobKey(name,group);
             //lock??
-            if(quartzScheduler.checkExists(deletedJobKey)){
-                quartzScheduler.deleteJob(deletedJobKey);
-                System.out.println("delete " + jobKey + " successfully!");
+            if(quartzScheduler.deleteJobs(jobKeyList)){
+                jobKeyList.forEach(jobKey -> System.out.println("delete " + jobKey + " successfully!"));
+            }else {
+                jobKeyList.forEach(jobKey -> System.out.println("delete " + jobKey + " fail!"));
             }
             //unlock??
         } catch (SchedulerException e) {
@@ -77,36 +74,38 @@ public class JobManageImpl implements IJobManage, Serializable {
      *     Todo: add a job/jobs or delete a job/jobs through detect configurations
      */
     @Override
-    public <E extends BaseMapper> void jobsChange(List<E> jobConfigurationMapperList) {
+    public <E extends BaseMapper> void jobsChange(List<E> jobConfigurationMapperList,String jobGroup) {
         try {
             List<String> newJobKeyList = jobConfigurationMapperList.stream()
                     .map(e->e.getJobGroup() + '.' + e.getJobName())
                     .collect(Collectors.toList());
-            Set<JobKey> currentJobKeySet = quartzScheduler.getJobKeys(GroupMatcher.groupContains(jobConfigurationMapperList.get(0).getJobGroup()));
+            Set<JobKey> currentJobKeySet = quartzScheduler.getJobKeys(GroupMatcher.groupContains(jobGroup));
             List<String> currentJobKeyList = currentJobKeySet.stream()
                     .map(Key::toString)
                     .collect(Collectors.toList());
-            List<String> addedJobKeyList;
-            List<String> deletedJobKeyList;
-            //delete or add a new job/jobs
-            addedJobKeyList = newJobKeyList.stream()
-                    .filter(newJobKey-> !currentJobKeyList.contains(newJobKey))
+            List<BaseMapper> addedJobConfigurationMapperList;
+            List<JobKey> deletedJobKeyList;
+            List<String> deletedJobKeyStringList;
+
+            /*delete or add a new job/jobs */
+            addedJobConfigurationMapperList = jobConfigurationMapperList.stream()
+                    .filter(jobConfigurationMapper -> !currentJobKeyList.contains(jobConfigurationMapper.getJobGroup() + '.' + jobConfigurationMapper.getJobName()))
                     .collect(Collectors.toList());
 
-            deletedJobKeyList = currentJobKeyList.stream()
+            deletedJobKeyStringList = currentJobKeyList.stream()
                     .filter(currentJobKey -> !newJobKeyList.contains(currentJobKey))
                     .collect(Collectors.toList());
 
-            List<BaseMapper> addedPushHotelJobConfigurationMapperList = jobConfigurationMapperList.stream()
-                    .filter(e->addedJobKeyList.contains(e.getJobGroup() + '.' + e.getJobName()))
+            deletedJobKeyList = deletedJobKeyStringList.stream()
+                    .map(deletedJobKeyString -> JobKey.jobKey(deletedJobKeyString.substring(deletedJobKeyString.indexOf('.') + 1),deletedJobKeyString.substring(0,deletedJobKeyString.indexOf('.'))))
                     .collect(Collectors.toList());
             //added jobs
-            if (!CollectionUtils.isEmpty(addedJobKeyList)) {
-                addedJobKeyList.forEach(newJob -> add(addedPushHotelJobConfigurationMapperList));
+            if (!CollectionUtils.isEmpty(addedJobConfigurationMapperList)) {
+                add(addedJobConfigurationMapperList);
             }
             //delete jobs
             if(!CollectionUtils.isEmpty(deletedJobKeyList)){
-                deletedJobKeyList.forEach(this::delete);
+                delete(deletedJobKeyList);
             }
 
         } catch (SchedulerException e) {

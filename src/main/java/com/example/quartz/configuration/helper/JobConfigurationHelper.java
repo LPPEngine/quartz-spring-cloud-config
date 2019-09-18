@@ -30,6 +30,9 @@ public class JobConfigurationHelper implements Serializable, InitializingBean {
 
     private static boolean jobConfigurationChange = false;
 
+    private static String PUSH_HOTEL_JOB_GROUP = "pushHotelJobGroup";
+
+    private static String FEED_JOB_GROUP = "feedJobGroup";
     /**
      *     we should init the capacity if we know the configurationList size
      */
@@ -47,8 +50,8 @@ public class JobConfigurationHelper implements Serializable, InitializingBean {
             jobsFactory.initialAllJobs(this.getFeedJobConfigurationList());
         }else {
             //notify observer
-            jobConfigurationObserver.jobConfigurationChange(this.getPushHotelJobConfigurationList());
-            jobConfigurationObserver.jobConfigurationChange(this.getFeedJobConfigurationList());
+            jobConfigurationObserver.jobConfigurationChange(this.getPushHotelJobConfigurationList(),PUSH_HOTEL_JOB_GROUP);
+            jobConfigurationObserver.jobConfigurationChange(this.getFeedJobConfigurationList(),FEED_JOB_GROUP);
             jobConfigurationChange = false;
         }
     }
