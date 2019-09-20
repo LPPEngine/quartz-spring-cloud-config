@@ -107,6 +107,7 @@ public class JobManageImpl implements IJobManage, Serializable {
             if(!CollectionUtils.isEmpty(deletedJobKeyList)){
                 delete(deletedJobKeyList);
             }
+            /*delete or add a new job/jobs */
 
         } catch (SchedulerException e) {
             e.printStackTrace();
