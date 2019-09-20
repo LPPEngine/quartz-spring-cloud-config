@@ -28,9 +28,9 @@ public class JobsFactory implements Serializable {
             if(quartzScheduler.checkExists(jobKey)){
                 continue;
             }
-            //get lock successfully(mysql row lock or redis lock)
+            // Todo: get lock successfully(mysql row lock or redis lock)
             newQuartzJobs(jobConfigurationMapper, jobKey);
-            //release lock successfully
+            // Todo: release lock successfully
         }
 
     }

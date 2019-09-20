@@ -40,13 +40,13 @@ public class JobManageImpl implements IJobManage, Serializable {
     @Override
     public void delete(List<JobKey> jobKeyList) {
         try {
-            //lock??
+            // Todo lock??
             if(quartzScheduler.deleteJobs(jobKeyList)){
                 jobKeyList.forEach(jobKey -> System.out.println("delete " + jobKey + " successfully!"));
             }else {
                 jobKeyList.forEach(jobKey -> System.out.println("delete " + jobKey + " fail!"));
             }
-            //unlock??
+            // Todo unlock??
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
