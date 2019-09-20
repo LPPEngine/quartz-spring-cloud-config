@@ -1,6 +1,5 @@
 package com.example.quartz.tasks.hotellist;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
